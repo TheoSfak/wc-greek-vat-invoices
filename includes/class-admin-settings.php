@@ -446,6 +446,19 @@ class WCGVI_Admin_Settings {
                 'address' => $address
             ));
         } else {
+            // Check for specific error codes
+            $error_code = isset($result['error_code']) ? $result['error_code'] : '';
+            $message = isset($result['message']) ? $result['message'] : __('Αποτυχία σύνδεσης με το AADE', 'wc-greek-vat-invoices');
+            
+            // Add helpful hints for common errors
+            if ($error_code === 'RG_WS_PUBLIC_AFM_CALLED_BY_NOT_ALLOWED') {
+                $message .= '<br><br><strong>' . __('Συμβουλή:', 'wc-greek-vat-invoices') . '</strong> ' . 
+                            __('Ο Ειδικός Κωδικός πρέπει να δημιουργηθεί από το TAXISnet χρησιμοποιώντας τους κωδικούς της επιχείρησής σας (όχι προσωπικούς κωδικούς).', 'wc-greek-vat-invoices');
+            } elseif ($error_code === 'RG_WS_PUBLIC_TOKEN_USERNAME_NOT_AUTHENTICATED') {
+                $message .= '<br><br><strong>' . __('Συμβουλή:', 'wc-greek-vat-invoices') . '</strong> ' . 
+                            __('Βεβαιωθείτε ότι αντιγράψατε σωστά τον Κωδικό Εισόδου και το Συνθηματικό Χρήστη από το TAXISnet.', 'wc-greek-vat-invoices');
+            }
+            
             // If AADE fails but VAT format is valid, show warning but not complete failure
             if (strlen($company_vat) === 9) {
                 $warning_msg = __('⚠️ Το AADE API δεν είναι διαθέσιμο αυτή τη στιγμή, αλλά η μορφή του ΑΦΜ είναι έγκυρη (9 ψηφία)', 'wc-greek-vat-invoices');

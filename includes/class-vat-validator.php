@@ -324,9 +324,23 @@ class WCGVI_VAT_Validator {
         if (!empty($error_rec)) {
             $error_code = $xml->xpath('//rg:error_code | //rg2:error_code');
             $error_descr = $xml->xpath('//rg:error_descr | //rg2:error_descr');
+            
+            $error_code_str = !empty($error_code) ? (string)$error_code[0] : '';
+            $error_message = !empty($error_descr) ? (string)$error_descr[0] : __('Μη έγκυρο ΑΦΜ', 'wc-greek-vat-invoices');
+            
+            // Enhanced error messages for specific cases
+            if ($error_code_str === 'RG_WS_PUBLIC_AFM_CALLED_BY_NOT_ALLOWED') {
+                error_log('AADE Error: Credentials are not from a business (επιτηδευματίας) AFM');
+                $error_message = __('Σφάλμα AADE: Ο Ειδικός Κωδικός που χρησιμοποιείτε δεν έχει εκδοθεί από επιχειρηματικό ΑΦΜ. Παρακαλώ δημιουργήστε νέο Ειδικό Κωδικό από το TAXISnet της επιχείρησής σας.', 'wc-greek-vat-invoices');
+            } elseif ($error_code_str === 'RG_WS_PUBLIC_TOKEN_USERNAME_NOT_AUTHENTICATED') {
+                error_log('AADE Error: Invalid credentials - ' . $error_code_str);
+                $error_message = __('Σφάλμα AADE: Μη έγκυροι κωδικοί πρόσβασης. Ελέγξτε το Όνομα Χρήστη και τον Κωδικό στις ρυθμίσεις.', 'wc-greek-vat-invoices');
+            }
+            
             return array(
                 'valid' => false,
-                'message' => !empty($error_descr) ? (string)$error_descr[0] : __('Μη έγκυρο ΑΦΜ', 'wc-greek-vat-invoices')
+                'message' => $error_message,
+                'error_code' => $error_code_str
             );
         }
         
