@@ -1,0 +1,240 @@
+/* WooCommerce Greek VAT & Invoices - Admin Styles */
+
+/* Password Toggle */
+.wcgvi-password-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.wcgvi-password-wrapper input {
+    flex: 1;
+}
+
+.wcgvi-toggle-password {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: #666;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wcgvi-toggle-password:hover {
+    color: #2271b1;
+}
+
+.wcgvi-toggle-password .dashicons {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+/* Invoice Section in Order Admin */
+.wcgvi-admin-section {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.wcgvi-admin-section h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* Invoice Details Table */
+.wcgvi-invoice-details {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.wcgvi-invoice-details td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.wcgvi-invoice-details td:first-child {
+    font-weight: 600;
+    width: 180px;
+    color: #555;
+}
+
+.wcgvi-invoice-details td:last-child {
+    color: #333;
+}
+
+/* VAT Exemption Badge */
+.wcgvi-vat-exempt-badge {
+    display: inline-block;
+    background: #fff3cd;
+    color: #856404;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+/* Action Buttons */
+.wcgvi-action-buttons {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.wcgvi-action-buttons .button {
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.wcgvi-validate-vat-btn {
+    background: #0073aa;
+    border-color: #0073aa;
+    color: #fff;
+}
+
+.wcgvi-validate-vat-btn:hover,
+.wcgvi-validate-vat-btn:focus {
+    background: #005a87;
+    border-color: #005a87;
+    color: #fff;
+}
+
+.wcgvi-regenerate-invoice {
+    background: #00a32a;
+    border-color: #00a32a;
+    color: #fff;
+}
+
+.wcgvi-regenerate-invoice:hover,
+.wcgvi-regenerate-invoice:focus {
+    background: #008a20;
+    border-color: #008a20;
+    color: #fff;
+}
+
+.wcgvi-upload-invoice-btn {
+    background: #f0c33c;
+    border-color: #f0c33c;
+    color: #333;
+}
+
+.wcgvi-upload-invoice-btn:hover,
+.wcgvi-upload-invoice-btn:focus {
+    background: #daa520;
+    border-color: #daa520;
+    color: #333;
+}
+
+/* Download Invoice Link */
+.wcgvi-download-link {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #2271b1;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 13px;
+    margin: 10px 0;
+}
+
+.wcgvi-download-link:hover,
+.wcgvi-download-link:focus {
+    background: #135e96;
+    color: #fff;
+}
+
+.wcgvi-download-link:before {
+    content: '📄 ';
+    margin-right: 5px;
+}
+
+/* Upload Interface */
+.wcgvi-upload-interface {
+    padding: 15px;
+    background: #f9f9f9;
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.wcgvi-upload-interface.dragover {
+    border-color: #2271b1;
+    background: #f0f6fc;
+}
+
+/* Settings Page */
+.wcgvi-settings-intro {
+    background: #fff;
+    border-left: 4px solid #2271b1;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.wcgvi-settings-intro h2 {
+    margin-top: 0;
+}
+
+.wcgvi-settings-intro p {
+    margin-bottom: 0;
+}
+
+/* Order List Column */
+.wcgvi-invoice-column {
+    font-weight: 600;
+    color: #2271b1;
+}
+
+.wcgvi-invoice-column .dashicons {
+    vertical-align: middle;
+}
+
+/* Loading State */
+.wcgvi-loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #2271b1;
+    border-radius: 50%;
+    animation: wcgvi-admin-spin 1s linear infinite;
+}
+
+@keyframes wcgvi-admin-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.dashicons.dashicons-update {
+    display: inline-block;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .wcgvi-action-buttons .button {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        text-align: center;
+    }
+    
+    .wcgvi-invoice-details td:first-child {
+        width: auto;
+    }
+}

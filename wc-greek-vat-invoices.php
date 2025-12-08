@@ -1,0 +1,241 @@
+<?php
+/**
+ * Plugin Name: WooCommerce Greek VAT & Invoices
+ * Plugin URI: https://github.com/TheoSfak/wc-greek-vat-invoices
+ * Description: Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, automatic VAT exemptions, and professional invoice generation
+ * Version: 1.0.0
+ * Author: Theodore Sfakianakis
+ * Author URI: https://www.paypal.com/paypalme/TheodoreSfakianakis
+ * Text Domain: wc-greek-vat-invoices
+ * Domain Path: /languages
+ * Requires at least: 5.0
+ * Requires PHP: 7.0
+ * WC requires at least: 3.0
+ * WC tested up to: 9.0
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+// Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Define plugin constants
+define('WCGVI_VERSION', '1.0.0');
+define('WCGVI_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('WCGVI_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('WCGVI_PLUGIN_BASENAME', plugin_basename(__FILE__));
+
+// Check if WooCommerce is active
+if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    add_action('admin_notices', function() {
+        echo '<div class="error"><p><strong>' . esc_html__('WooCommerce Greek VAT & Invoices', 'wc-greek-vat-invoices') . '</strong> ' . esc_html__('απαιτεί το WooCommerce να είναι εγκατεστημένο και ενεργοποιημένο.', 'wc-greek-vat-invoices') . '</p></div>';
+    });
+    return;
+}
+
+// WooCommerce HPOS compatibility declaration
+add_action('before_woocommerce_init', function() {
+    if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+    }
+});
+
+/**
+ * Main plugin class
+ */
+class WC_Greek_VAT_Invoices {
+    
+    /**
+     * Single instance
+     */
+    private static $instance = null;
+    
+    /**
+     * Get instance
+     */
+    public static function get_instance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        $this->load_dependencies();
+        $this->init_hooks();
+    }
+    
+    /**
+     * Load required files
+     */
+    private function load_dependencies() {
+        require_once WCGVI_PLUGIN_DIR . 'includes/class-checkout-fields.php';
+        require_once WCGVI_PLUGIN_DIR . 'includes/class-vat-validator.php';
+        require_once WCGVI_PLUGIN_DIR . 'includes/class-invoice-generator.php';
+        require_once WCGVI_PLUGIN_DIR . 'includes/class-admin-settings.php';
+        require_once WCGVI_PLUGIN_DIR . 'includes/class-email-handler.php';
+        require_once WCGVI_PLUGIN_DIR . 'includes/class-order-handler.php';
+    }
+    
+    /**
+     * Initialize hooks
+     */
+    private function init_hooks() {
+        add_action('plugins_loaded', array($this, 'load_textdomain'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_scripts'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+        add_action('woocommerce_admin_field_wcgvi_test_button', array($this, 'output_test_button_field'));
+        
+        // Initialize components
+        WCGVI_Checkout_Fields::get_instance();
+        WCGVI_VAT_Validator::get_instance();
+        WCGVI_Invoice_Generator::get_instance();
+        WCGVI_Admin_Settings::get_instance();
+        WCGVI_Email_Handler::get_instance();
+        WCGVI_Order_Handler::get_instance();
+    }
+    
+    /**
+     * Load plugin textdomain
+     */
+    public function load_textdomain() {
+        load_plugin_textdomain('wc-greek-vat-invoices', false, dirname(WCGVI_PLUGIN_BASENAME) . '/languages');
+    }
+    
+    /**
+     * Enqueue frontend scripts
+     */
+    public function enqueue_frontend_scripts() {
+        if (is_checkout()) {
+            wp_enqueue_style('wcgvi-checkout', WCGVI_PLUGIN_URL . 'assets/css/checkout.css', array(), WCGVI_VERSION);
+            wp_enqueue_script('wcgvi-checkout', WCGVI_PLUGIN_URL . 'assets/js/checkout.js', array('jquery'), WCGVI_VERSION, true);
+            
+            wp_localize_script('wcgvi-checkout', 'wcgvi_params', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('wcgvi_nonce'),
+                'uppercase' => get_option('wcgvi_uppercase_fields', 'yes'),
+                'validating_text' => __('Επικύρωση...', 'wc-greek-vat-invoices'),
+                'valid_text' => __('Έγκυρο', 'wc-greek-vat-invoices'),
+                'invalid_text' => __('Μη έγκυρο ΑΦΜ', 'wc-greek-vat-invoices'),
+                'error_text' => __('Σφάλμα επικύρωσης ΑΦΜ', 'wc-greek-vat-invoices')
+            ));
+        }
+    }
+    
+    /**
+     * Enqueue admin scripts
+     */
+    public function enqueue_admin_scripts($hook) {
+        if (strpos($hook, 'wc-settings') !== false || get_post_type() === 'shop_order' || strpos($hook, 'woocommerce') !== false) {
+            wp_enqueue_style('wcgvi-admin', WCGVI_PLUGIN_URL . 'assets/css/admin.css', array(), WCGVI_VERSION);
+            wp_enqueue_script('wcgvi-admin', WCGVI_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), WCGVI_VERSION, true);
+            
+            wp_localize_script('wcgvi-admin', 'wcgvi_admin_params', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('wcgvi_admin_nonce'),
+                'no_vat_text' => __('Παρακαλώ εισάγετε ΑΦΜ', 'wc-greek-vat-invoices'),
+                'validating_text' => __('Επικύρωση...', 'wc-greek-vat-invoices'),
+                'validate_text' => __('Επικύρωση ΑΦΜ', 'wc-greek-vat-invoices'),
+                'valid_text' => __('Έγκυρο ΑΦΜ', 'wc-greek-vat-invoices'),
+                'invalid_text' => __('Μη έγκυρο ΑΦΜ', 'wc-greek-vat-invoices'),
+                'error_text' => __('Παρουσιάστηκε σφάλμα', 'wc-greek-vat-invoices'),
+                'company_text' => __('Επωνυμία', 'wc-greek-vat-invoices'),
+                'doy_text' => __('ΔΟΥ', 'wc-greek-vat-invoices'),
+                'activity_text' => __('Επάγγελμα', 'wc-greek-vat-invoices'),
+                'regenerate_text' => __('Αναδημιουργία Παραστατικού', 'wc-greek-vat-invoices'),
+                'regenerate_confirm' => __('Είστε σίγουροι ότι θέλετε να αναδημιουργήσετε το παραστατικό;', 'wc-greek-vat-invoices'),
+                'generating_text' => __('Δημιουργία...', 'wc-greek-vat-invoices'),
+                'success_text' => __('Το παραστατικό αναδημιουργήθηκε επιτυχώς', 'wc-greek-vat-invoices'),
+                'upload_text' => __('Ανέβασμα Παραστατικού', 'wc-greek-vat-invoices'),
+                'uploading_text' => __('Ανέβασμα...', 'wc-greek-vat-invoices'),
+                'upload_success_text' => __('Το παραστατικό ανέβηκε επιτυχώς', 'wc-greek-vat-invoices'),
+                'pdf_only_text' => __('Παρακαλώ ανεβάστε μόνο αρχείο PDF', 'wc-greek-vat-invoices'),
+                'testing_text' => __('Δοκιμή...', 'wc-greek-vat-invoices'),
+                'test_aade_text' => __('Δοκιμή AADE', 'wc-greek-vat-invoices'),
+                'test_vies_text' => __('Δοκιμή VIES', 'wc-greek-vat-invoices')
+            ));
+        }
+    }
+    
+    /**
+     * Output custom setting field types
+     */
+    public function output_custom_field_types() {
+        add_action('woocommerce_admin_field_wcgvi_test_button', array($this, 'output_test_button_field'));
+    }
+    
+    /**
+     * Output test button field
+     */
+    public function output_test_button_field($value) {
+        ?>
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <label for="<?php echo esc_attr($value['id']); ?>"><?php echo esc_html($value['title']); ?></label>
+            </th>
+            <td class="forminp forminp-<?php echo esc_attr($value['type']); ?>">
+                <button type="button" 
+                        class="button button-secondary wcgvi-test-connection" 
+                        data-action="<?php echo esc_attr($value['action']); ?>"
+                        id="<?php echo esc_attr($value['id']); ?>">
+                    <?php echo esc_html($value['button_text']); ?>
+                </button>
+                <span class="wcgvi-test-result" style="margin-left: 10px;"></span>
+                <p class="description"><?php echo esc_html($value['desc']); ?></p>
+            </td>
+        </tr>
+        <?php
+    }
+}
+
+// Initialize plugin
+function wcgvi_init() {
+    return WC_Greek_VAT_Invoices::get_instance();
+}
+
+add_action('plugins_loaded', 'wcgvi_init');
+
+// Activation hook
+register_activation_hook(__FILE__, function() {
+    // Create necessary database tables if needed
+    global $wpdb;
+    
+    $table_name = $wpdb->prefix . 'wcgvi_invoices';
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+        id bigint(20) NOT NULL AUTO_INCREMENT,
+        order_id bigint(20) NOT NULL,
+        invoice_number varchar(50) NOT NULL,
+        invoice_type varchar(20) NOT NULL,
+        invoice_date datetime NOT NULL,
+        file_path varchar(255),
+        PRIMARY KEY (id),
+        KEY order_id (order_id),
+        KEY invoice_number (invoice_number)
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+    
+    // Set default options
+    if (get_option('wcgvi_version') === false) {
+        add_option('wcgvi_version', WCGVI_VERSION);
+        add_option('wcgvi_enable_aade_validation', 'yes');
+        add_option('wcgvi_enable_vies_validation', 'no');
+        add_option('wcgvi_auto_send_invoice', 'yes');
+        add_option('wcgvi_uppercase_fields', 'yes');
+        add_option('wcgvi_vat_exempt_eu', 'no');
+        add_option('wcgvi_vat_exempt_non_eu', 'no');
+    }
+});
+
+// Deactivation hook
+register_deactivation_hook(__FILE__, function() {
+    // Cleanup if needed
+});
