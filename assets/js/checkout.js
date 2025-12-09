@@ -50,13 +50,25 @@ jQuery(document).ready(function($) {
             // Get value from radio buttons or select
             var invoiceType = $('input[name="billing_invoice_type"]:checked').val() || $('#billing_invoice_type').val();
             var $invoiceFields = $('.wcgvi-invoice-fields');
+            var $article39aWrapper = $('.wcgvi-article-39a-wrapper');
             
             if (invoiceType === 'invoice') {
                 $invoiceFields.addClass('visible').slideDown(300);
+                
+                // Show Article 39a checkbox only for Greek businesses
+                var country = $('#billing_country').val();
+                if (country === 'GR' && $article39aWrapper.length) {
+                    $article39aWrapper.slideDown(300);
+                }
                 $invoiceFields.find('input').prop('required', true);
             } else {
                 $invoiceFields.removeClass('visible').slideUp(300);
                 $invoiceFields.find('input').prop('required', false);
+                $article39aWrapper.slideUp(300);
+                // Uncheck and clear Article 39a
+                $('#wcgvi_article_39a_checkbox').prop('checked', false);
+                $('#vat_exempt_39a').val('false');
+                $('.wcgvi-article-39a-live-notice').remove();
             }
         },
         
@@ -171,17 +183,18 @@ jQuery(document).ready(function($) {
         toggleArticle39a: function() {
             var $checkbox = $('#wcgvi_article_39a_checkbox');
             var $hiddenField = $('#vat_exempt_39a');
-            var $noticeContainer = $('.wcgvi-article-39a-notice');
+            var $liveNotice = $('.wcgvi-article-39a-live-notice');
             
             if ($checkbox.is(':checked')) {
                 // Set hidden field
                 $hiddenField.val('true');
                 
-                // Show exemption notice
-                if ($noticeContainer.length === 0) {
-                    $('.woocommerce-checkout').before(
-                        '<div class="woocommerce-info wcgvi-article-39a-notice">' +
-                        '<strong>ℹ️ Απαλλαγή Άρθρου 39α:</strong> Η παραγγελία σας θα τιμολογηθεί χωρίς ΦΠΑ σύμφωνα με την ΠΟΛ.1150/2017' +
+                // Show live exemption notice above order review
+                if ($liveNotice.length === 0) {
+                    $('.woocommerce-checkout-review-order').before(
+                        '<div class="woocommerce-info wcgvi-article-39a-live-notice">' +
+                        '<strong>✓ Απαλλαγή Άρθρου 39α Ενεργή:</strong> Η παραγγελία σας θα τιμολογηθεί χωρίς ΦΠΑ σύμφωνα με την ΠΟΛ.1150/2017. ' +
+                        'Το ΦΠΑ θα αφαιρεθεί αυτόματα από τα σύνολα.' +
                         '</div>'
                     );
                 }
@@ -192,8 +205,8 @@ jQuery(document).ready(function($) {
                 // Clear hidden field
                 $hiddenField.val('false');
                 
-                // Remove notice
-                $noticeContainer.remove();
+                // Remove live notice
+                $liveNotice.remove();
                 
                 // Trigger checkout update
                 $('body').trigger('update_checkout');

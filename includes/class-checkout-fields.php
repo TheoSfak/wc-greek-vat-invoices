@@ -23,6 +23,9 @@ class WCGVI_Checkout_Fields {
         // Add invoice/receipt selection field - Run AFTER Smart Checkout Fields Manager (999)
         add_filter('woocommerce_checkout_fields', array($this, 'add_invoice_fields'), 1000, 1);
         
+        // Add Article 39a checkbox after business activity field
+        add_action('woocommerce_after_checkout_billing_form', array($this, 'add_article_39a_checkbox'));
+        
         // Validate fields
         add_action('woocommerce_after_checkout_validation', array($this, 'validate_invoice_fields'), 10, 2);
         
@@ -130,20 +133,8 @@ class WCGVI_Checkout_Fields {
             'priority' => $invoice_type_priority + 4
         );
         
-        // Article 39a VAT Exemption Checkbox (only for Greek businesses)
+        // Hidden field for Article 39a (will be controlled by custom checkbox)
         if (get_option('wcgvi_article_39a') === 'yes') {
-            $fields['billing']['wcgvi_article_39a_checkbox'] = array(
-                'type' => 'checkbox',
-                'label' => __('Απαλλαγή Άρθρου 39α (ΠΟΛ.1150/2017)', 'wc-greek-vat-invoices'),
-                'required' => false,
-                'class' => array('form-row-wide', 'wcgvi-invoice-fields', 'wcgvi-article-39a-field'),
-                'priority' => $invoice_type_priority + 5,
-                'custom_attributes' => array(
-                    'data-article-39a' => 'true'
-                )
-            );
-            
-            // Hidden field to pass value to backend
             $fields['billing']['vat_exempt_39a'] = array(
                 'type' => 'hidden',
                 'default' => 'false',
@@ -152,6 +143,36 @@ class WCGVI_Checkout_Fields {
         }
         
         return $fields;
+    }
+    
+    /**
+     * Add Article 39a checkbox after billing form
+     */
+    public function add_article_39a_checkbox($checkout) {
+        if (get_option('wcgvi_article_39a') !== 'yes') {
+            return;
+        }
+        
+        echo '<div class="wcgvi-article-39a-wrapper wcgvi-invoice-fields" style="display:none;">';
+        echo '<div class="wcgvi-article-39a-checkbox-field">';
+        echo '<label class="wcgvi-article-39a-label">';
+        echo '<input type="checkbox" id="wcgvi_article_39a_checkbox" name="wcgvi_article_39a_checkbox" value="1" />';
+        echo '<span class="wcgvi-article-39a-text">' . esc_html__('Απαλλαγή Άρθρου 39α (ΠΟΛ.1150/2017)', 'wc-greek-vat-invoices') . '</span>';
+        echo '</label>';
+        echo '<div class="wcgvi-article-39a-notice">';
+        echo '<p><strong>' . esc_html__('Προϋποθέσεις Απαλλαγής:', 'wc-greek-vat-invoices') . '</strong></p>';
+        echo '<ul>';
+        echo '<li>✓ ' . esc_html__('Ελληνική επιχείρηση με έδρα στην Ελλάδα', 'wc-greek-vat-invoices') . '</li>';
+        echo '<li>✓ ' . esc_html__('Ετήσιος τζίρος μικρότερος των 10.000€', 'wc-greek-vat-invoices') . '</li>';
+        echo '<li>✓ ' . esc_html__('Μη υπέρβαση ορίου κατά το τρέχον έτος', 'wc-greek-vat-invoices') . '</li>';
+        echo '<li>✓ ' . esc_html__('Ισχύει για όλες τις κατηγορίες προϊόντων/υπηρεσιών', 'wc-greek-vat-invoices') . '</li>';
+        echo '</ul>';
+        echo '<p class="wcgvi-article-39a-warning">';
+        echo '<em>' . esc_html__('⚠️ Η επιλογή αυτής της απαλλαγής είναι ευθύνη της επιχείρησης. Βεβαιωθείτε ότι πληροίτε τις προϋποθέσεις πριν την επιλέξετε.', 'wc-greek-vat-invoices') . '</em>';
+        echo '</p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
     }
     
     /**
