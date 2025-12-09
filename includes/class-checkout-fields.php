@@ -130,6 +130,27 @@ class WCGVI_Checkout_Fields {
             'priority' => $invoice_type_priority + 4
         );
         
+        // Article 39a VAT Exemption Checkbox (only for Greek businesses)
+        if (get_option('wcgvi_article_39a') === 'yes') {
+            $fields['billing']['wcgvi_article_39a_checkbox'] = array(
+                'type' => 'checkbox',
+                'label' => __('Απαλλαγή Άρθρου 39α (ΠΟΛ.1150/2017)', 'wc-greek-vat-invoices'),
+                'required' => false,
+                'class' => array('form-row-wide', 'wcgvi-invoice-fields', 'wcgvi-article-39a-field'),
+                'priority' => $invoice_type_priority + 5,
+                'custom_attributes' => array(
+                    'data-article-39a' => 'true'
+                )
+            );
+            
+            // Hidden field to pass value to backend
+            $fields['billing']['vat_exempt_39a'] = array(
+                'type' => 'hidden',
+                'default' => 'false',
+                'class' => array('wcgvi-hidden-field')
+            );
+        }
+        
         return $fields;
     }
     

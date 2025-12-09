@@ -64,7 +64,10 @@ Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, a
 - ✅ **VIES Validation**: Επικύρωση ενδοκοινοτικών ΑΦΜ
 - ✅ **Auto VAT Exemption**: Αυτόματη απαλλαγή ΦΠΑ για validated EU VAT
 - ✅ **Non-EU Export**: Απαλλαγή ΦΠΑ για εξαγωγές εκτός ΕΕ
-- ✅ **Article 39a**: Υποστήριξη άρθρου 39α (ΠΟΛ.1150/2017)
+- ✅ **Article 39a**: Υποστήριξη άρθρου 39α για μικρές επιχειρήσεις (ΠΟΛ.1150/2017)
+  - Checkbox στο checkout για Ελληνικές επιχειρήσεις
+  - Αυτόματη αφαίρεση ΦΠΑ από παραγγελία
+  - Σημείωση στο παραστατικό
 
 ### 📄 PDF Generation
 - ✅ **Professional Invoices**: Επαγγελματικά PDF τιμολόγια/αποδείξεις

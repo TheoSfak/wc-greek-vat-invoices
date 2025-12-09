@@ -36,6 +36,11 @@ jQuery(document).ready(function($) {
                     $(this).val($(this).val().toUpperCase());
                 });
             }
+            
+            // Article 39a checkbox toggle
+            $(document).on('change', '#wcgvi_article_39a_checkbox', function() {
+                wcgviCheckout.toggleArticle39a();
+            });
         },
         
         /**
@@ -157,7 +162,42 @@ jQuery(document).ready(function($) {
         clearValidation: function() {
             $('.wcgvi-loading, .wcgvi-valid, .wcgvi-invalid, .wcgvi-error').remove();
             $('#billing_vat_number').removeClass('wcgvi-field-valid wcgvi-field-invalid');
-            $('.wcgvi-exemption-notice').remove();
+            $('.wcgvi-exemption-notice, .wcgvi-article-39a-notice').remove();
+        },
+        
+        /**
+         * Toggle Article 39a VAT exemption
+         */
+        toggleArticle39a: function() {
+            var $checkbox = $('#wcgvi_article_39a_checkbox');
+            var $hiddenField = $('#vat_exempt_39a');
+            var $noticeContainer = $('.wcgvi-article-39a-notice');
+            
+            if ($checkbox.is(':checked')) {
+                // Set hidden field
+                $hiddenField.val('true');
+                
+                // Show exemption notice
+                if ($noticeContainer.length === 0) {
+                    $('.woocommerce-checkout').before(
+                        '<div class="woocommerce-info wcgvi-article-39a-notice">' +
+                        '<strong>ℹ️ Απαλλαγή Άρθρου 39α:</strong> Η παραγγελία σας θα τιμολογηθεί χωρίς ΦΠΑ σύμφωνα με την ΠΟΛ.1150/2017' +
+                        '</div>'
+                    );
+                }
+                
+                // Trigger checkout update to recalculate totals
+                $('body').trigger('update_checkout');
+            } else {
+                // Clear hidden field
+                $hiddenField.val('false');
+                
+                // Remove notice
+                $noticeContainer.remove();
+                
+                // Trigger checkout update
+                $('body').trigger('update_checkout');
+            }
         }
     };
     

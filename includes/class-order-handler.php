@@ -71,13 +71,13 @@ class WCGVI_Order_Handler {
             $order->add_meta_data('_vat_exempt_reason', 'Third country export');
         }
         
-        // Check Article 39a exemption
-        if (get_option('wcgvi_vat_exempt_39a') === 'yes') {
+        // Check Article 39a exemption (Greek businesses only)
+        if ($country === 'GR' && get_option('wcgvi_article_39a') === 'yes') {
             // Nonce is verified by WooCommerce checkout process
             $exempt_39a = isset($_POST['vat_exempt_39a']) && sanitize_text_field(wp_unslash($_POST['vat_exempt_39a'])) === 'true'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
             if ($exempt_39a) {
                 $should_exempt = true;
-                $order->add_meta_data('_vat_exempt_reason', 'Article 39a (ΠΟΛ.1150/2017)');
+                $order->add_meta_data('_vat_exempt_reason', 'Απαλλαγή Άρθρου 39α (ΠΟΛ.1150/2017)');
             }
         }
         
