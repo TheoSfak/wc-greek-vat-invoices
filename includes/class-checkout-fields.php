@@ -129,25 +129,26 @@ class WCGVI_Checkout_Fields {
      * Validate invoice fields
      */
     public function validate_invoice_fields($data, $errors) {
-        $invoice_type = isset($_POST['billing_invoice_type']) ? sanitize_text_field($_POST['billing_invoice_type']) : 'receipt';
+        // Nonce is verified by WooCommerce checkout process
+        $invoice_type = isset($_POST['billing_invoice_type']) ? sanitize_text_field(wp_unslash($_POST['billing_invoice_type'])) : 'receipt'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
         
         if ($invoice_type === 'invoice') {
             // Validate required fields for invoice
-            if (empty($_POST['billing_company'])) {
+            if (empty($_POST['billing_company'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_company', __('Η επωνυμία είναι υποχρεωτική για την έκδοση τιμολογίου.', 'wc-greek-vat-invoices'));
             }
             
-            if (empty($_POST['billing_vat_number'])) {
+            if (empty($_POST['billing_vat_number'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_vat_number', __('Το ΑΦΜ είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'wc-greek-vat-invoices'));
-            } elseif (!preg_match('/^[0-9]{9}$/', $_POST['billing_vat_number'])) {
+            } elseif (isset($_POST['billing_vat_number']) && !preg_match('/^[0-9]{9}$/', sanitize_text_field(wp_unslash($_POST['billing_vat_number'])))) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_vat_number', __('Το ΑΦΜ πρέπει να είναι 9 ψηφία.', 'wc-greek-vat-invoices'));
             }
             
-            if (empty($_POST['billing_doy'])) {
+            if (empty($_POST['billing_doy'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_doy', __('Η ΔΟΥ είναι υποχρεωτική για την έκδοση τιμολογίου.', 'wc-greek-vat-invoices'));
             }
             
-            if (empty($_POST['billing_business_activity'])) {
+            if (empty($_POST['billing_business_activity'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_business_activity', __('Το επάγγελμα είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'wc-greek-vat-invoices'));
             }
         }
@@ -157,28 +158,29 @@ class WCGVI_Checkout_Fields {
      * Save invoice fields to order
      */
     public function save_invoice_fields($order_id) {
-        if (isset($_POST['billing_invoice_type'])) {
-            update_post_meta($order_id, '_billing_invoice_type', sanitize_text_field($_POST['billing_invoice_type']));
+        // Nonce is verified by WooCommerce checkout process
+        if (isset($_POST['billing_invoice_type'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            update_post_meta($order_id, '_billing_invoice_type', sanitize_text_field(wp_unslash($_POST['billing_invoice_type']))); // phpcs:ignore WordPress.Security.NonceVerification.Missing
         }
         
-        if (isset($_POST['billing_vat_number'])) {
-            $vat = sanitize_text_field($_POST['billing_vat_number']);
+        if (isset($_POST['billing_vat_number'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            $vat = sanitize_text_field(wp_unslash($_POST['billing_vat_number'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing
             if (get_option('wcgvi_uppercase_fields') === 'yes') {
                 $vat = strtoupper($vat);
             }
             update_post_meta($order_id, '_billing_vat_number', $vat);
         }
         
-        if (isset($_POST['billing_doy'])) {
-            $doy = sanitize_text_field($_POST['billing_doy']);
+        if (isset($_POST['billing_doy'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            $doy = sanitize_text_field(wp_unslash($_POST['billing_doy'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing
             if (get_option('wcgvi_uppercase_fields') === 'yes') {
                 $doy = strtoupper($doy);
             }
             update_post_meta($order_id, '_billing_doy', $doy);
         }
         
-        if (isset($_POST['billing_business_activity'])) {
-            $activity = sanitize_text_field($_POST['billing_business_activity']);
+        if (isset($_POST['billing_business_activity'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            $activity = sanitize_text_field(wp_unslash($_POST['billing_business_activity'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing
             if (get_option('wcgvi_uppercase_fields') === 'yes') {
                 $activity = strtoupper($activity);
             }

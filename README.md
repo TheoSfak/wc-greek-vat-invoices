@@ -1,4 +1,48 @@
-# WooCommerce Greek VAT & Invoices
+=== Greek VAT & Invoices for WooCommerce ===
+Contributors: theodoresfakianakis
+Tags: woocommerce, greece, vat, invoices, aade
+Requires at least: 5.0
+Tested up to: 6.9
+Requires PHP: 7.0
+Stable tag: 1.0.0
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, automatic VAT exemptions, and professional invoice generation.
+
+== Description ==
+
+Πλήρης λύση ελληνικής τιμολόγησης για WooCommerce με επικύρωση AADE και VIES.
+
+= Features =
+
+* Επιλογή Παραστατικού: Τιμολόγιο ή Απόδειξη
+* Επικύρωση ΑΦΜ via AADE
+* VIES Validation για ενδοκοινοτικά ΑΦΜ
+* Αυτόματη απαλλαγή ΦΠΑ
+* Professional PDF generation
+* Email integration
+
+== Installation ==
+
+1. Upload the plugin files to `/wp-content/plugins/`
+2. Activate the plugin through the 'Plugins' menu
+3. Configure settings in WooCommerce > Settings > Greek VAT
+
+== Changelog ==
+
+= 1.0.0 =
+* Initial release
+
+== Screenshots ==
+
+1. Checkout fields
+2. Admin settings
+3. Invoice PDF
+
+---
+
+# Greek VAT & Invoices for WooCommerce
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-blue.svg)
@@ -6,8 +50,6 @@
 ![License](https://img.shields.io/badge/license-GPL--2.0-green.svg)
 
 Πλήρης λύση ελληνικής τιμολόγησης για WooCommerce με AADE & VIES επικύρωση, αυτόματες απαλλαγές ΦΠΑ και επαγγελματική δημιουργία παραστατικών.
-
-Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, automatic VAT exemptions, and professional invoice generation.
 
 ## ✨ Χαρακτηριστικά / Features
 

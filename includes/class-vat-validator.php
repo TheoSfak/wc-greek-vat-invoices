@@ -31,8 +31,8 @@ class WCGVI_VAT_Validator {
     public function ajax_validate_vat() {
         check_ajax_referer('wcgvi_nonce', 'nonce');
         
-        $vat_number = isset($_POST['vat_number']) ? sanitize_text_field($_POST['vat_number']) : '';
-        $country = isset($_POST['country']) ? sanitize_text_field($_POST['country']) : 'GR';
+        $vat_number = isset($_POST['vat_number']) ? sanitize_text_field(wp_unslash($_POST['vat_number'])) : '';
+        $country = isset($_POST['country']) ? sanitize_text_field(wp_unslash($_POST['country'])) : 'GR';
         
         if (empty($vat_number)) {
             wp_send_json_error(array('message' => __('Το ΑΦΜ είναι υποχρεωτικό', 'wc-greek-vat-invoices')));
@@ -68,9 +68,6 @@ class WCGVI_VAT_Validator {
             $response_data = array(
                 'message' => $result['message']
             );
-            
-            // Debug log
-            error_log('WCGVI: Validation result data: ' . print_r($result['data'], true));
             
             // Add company data if available (from AADE or VIES)
             if (isset($result['data'])) {
@@ -213,8 +210,6 @@ class WCGVI_VAT_Validator {
         $last_error = null;
         
         foreach ($content_types as $content_type) {
-            error_log("AADE: Trying Content-Type: " . $content_type);
-            
             $response = wp_remote_post($url, array(
                 'timeout' => 30,
                 'httpversion' => '1.1',
@@ -237,7 +232,6 @@ class WCGVI_VAT_Validator {
             }
             
             $http_code = wp_remote_retrieve_response_code($response);
-            error_log("AADE: HTTP Code: " . $http_code . " with Content-Type: " . $content_type);
             
             // If not 415, we found a working Content-Type
             if ($http_code !== 415) {
@@ -262,10 +256,6 @@ class WCGVI_VAT_Validator {
         
         $body = wp_remote_retrieve_body($response);
         $http_code = wp_remote_retrieve_response_code($response);
-        
-        // Log successful response
-        error_log('AADE: Success! HTTP Code: ' . $http_code);
-        error_log('AADE Response Body: ' . substr($body, 0, 1000));
         
         // Check for HTTP errors
         if ($http_code !== 200) {
@@ -329,11 +319,9 @@ class WCGVI_VAT_Validator {
             $error_message = !empty($error_descr) ? (string)$error_descr[0] : __('Μη έγκυρο ΑΦΜ', 'wc-greek-vat-invoices');
             
             // Enhanced error messages for specific cases
-            if ($error_code_str === 'RG_WS_PUBLIC_AFM_CALLED_BY_NOT_ALLOWED') {
-                error_log('AADE Error: Credentials are not from a business (επιτηδευματίας) AFM');
+            if ($error_code_str === 'RG_WS_PUBLIC_TOKEN_TAXPAYER_NOT_AUTHENTICATED') {
                 $error_message = __('Σφάλμα AADE: Ο Ειδικός Κωδικός που χρησιμοποιείτε δεν έχει εκδοθεί από επιχειρηματικό ΑΦΜ. Παρακαλώ δημιουργήστε νέο Ειδικό Κωδικό από το TAXISnet της επιχείρησής σας.', 'wc-greek-vat-invoices');
             } elseif ($error_code_str === 'RG_WS_PUBLIC_TOKEN_USERNAME_NOT_AUTHENTICATED') {
-                error_log('AADE Error: Invalid credentials - ' . $error_code_str);
                 $error_message = __('Σφάλμα AADE: Μη έγκυροι κωδικοί πρόσβασης. Ελέγξτε το Όνομα Χρήστη και τον Κωδικό στις ρυθμίσεις.', 'wc-greek-vat-invoices');
             }
             

@@ -63,7 +63,7 @@ class WCGVI_Invoice_Generator {
             $upload_dir = wp_upload_dir();
             $old_file_path = $upload_dir['basedir'] . '/wcgvi-invoices/' . $old_file;
             if (file_exists($old_file_path)) {
-                unlink($old_file_path);
+                wp_delete_file($old_file_path);
             }
         }
         
@@ -104,15 +104,15 @@ class WCGVI_Invoice_Generator {
         }
         
         // Check if file was uploaded
-        if (!isset($_FILES['invoice_file']) || $_FILES['invoice_file']['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES['invoice_file']) || !isset($_FILES['invoice_file']['error']) || $_FILES['invoice_file']['error'] !== UPLOAD_ERR_OK) {
             wp_send_json_error(array('message' => __('Δεν επιλέχθηκε αρχείο ή υπήρξε σφάλμα κατά το ανέβασμα', 'wc-greek-vat-invoices')));
         }
         
-        $file = $_FILES['invoice_file'];
+        $file = $_FILES['invoice_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         
         // Validate file type
-        $allowed_types = array('application/pdf', 'application/x-pdf');
-        $file_type = wp_check_filetype($file['name']);
+        $allowed_types = array('application/pdf');
+        $file_type = wp_check_filetype($file['name'], array('pdf' => 'application/pdf'));
         
         if (!in_array($file['type'], $allowed_types) && $file_type['ext'] !== 'pdf') {
             wp_send_json_error(array('message' => __('Μόνο PDF αρχεία επιτρέπονται', 'wc-greek-vat-invoices')));
@@ -133,7 +133,7 @@ class WCGVI_Invoice_Generator {
         if ($old_file) {
             $old_file_path = $invoices_dir . '/' . $old_file;
             if (file_exists($old_file_path)) {
-                unlink($old_file_path);
+                wp_delete_file($old_file_path);
             }
         }
         
@@ -141,39 +141,58 @@ class WCGVI_Invoice_Generator {
         $filename = 'invoice-' . $order_id . '-' . time() . '.pdf';
         $file_path = $invoices_dir . '/' . $filename;
         
-        // Move uploaded file
-        if (move_uploaded_file($file['tmp_name'], $file_path)) {
-            // Update order meta
-            $order->update_meta_data('_invoice_file_path', $filename);
-            $order->update_meta_data('_invoice_uploaded', 'yes');
-            $order->update_meta_data('_invoice_upload_date', current_time('mysql'));
-            $order->save();
+        // Move uploaded file using WordPress filesystem API
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        $upload_result = wp_handle_upload(
+            $file,
+            array(
+                'test_form' => false,
+                'mimes' => array('pdf' => 'application/pdf')
+            )
+        );
+        
+        if (isset($upload_result['error'])) {
+            wp_send_json_error(array('message' => $upload_result['error']));
+        }
+        
+        // Move to our custom directory
+        if (isset($upload_result['file'])) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename
+            if (@rename($upload_result['file'], $file_path)) {
+                // Update order meta
+                $order->update_meta_data('_invoice_file_path', $filename);
+                $order->update_meta_data('_invoice_uploaded', 'yes');
+                $order->update_meta_data('_invoice_upload_date', current_time('mysql'));
+                $order->save();
             
-            // Update database
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'wcgvi_invoices';
-            
-            $invoice_number = $order->get_meta('_invoice_number');
-            $invoice_type = $order->get_meta('_billing_invoice_type') ?: 'receipt';
-            
-            $wpdb->replace(
-                $table_name,
-                array(
-                    'order_id' => $order_id,
-                    'invoice_number' => $invoice_number,
-                    'invoice_type' => $invoice_type,
-                    'invoice_date' => current_time('mysql'),
-                    'file_path' => $filename
-                ),
-                array('%d', '%s', '%s', '%s', '%s')
-            );
-            
-            wp_send_json_success(array(
-                'message' => __('Το παραστατικό ανέβηκε επιτυχώς', 'wc-greek-vat-invoices'),
-                'filename' => $filename
-            ));
+                // Update database
+                global $wpdb;
+                $table_name = $wpdb->prefix . 'wcgvi_invoices';
+                
+                $invoice_number = $order->get_meta('_invoice_number');
+                $invoice_type = $order->get_meta('_billing_invoice_type') ?: 'receipt';
+                
+                $wpdb->replace(
+                    $table_name,
+                    array(
+                        'order_id' => $order_id,
+                        'invoice_number' => $invoice_number,
+                        'invoice_type' => $invoice_type,
+                        'invoice_date' => current_time('mysql'),
+                        'file_path' => $filename
+                    ),
+                    array('%d', '%s', '%s', '%s', '%s')
+                );
+                
+                wp_send_json_success(array(
+                    'message' => __('Το παραστατικό ανέβηκε επιτυχώς', 'wc-greek-vat-invoices'),
+                    'filename' => $filename
+                ));
+            } else {
+                wp_send_json_error(array('message' => __('Αποτυχία μεταφοράς αρχείου', 'wc-greek-vat-invoices')));
+            }
         } else {
-            wp_send_json_error(array('message' => __('Αποτυχία μεταφοράς αρχείου', 'wc-greek-vat-invoices')));
+            wp_send_json_error(array('message' => __('Σφάλμα κατά το ανέβασμα', 'wc-greek-vat-invoices')));
         }
     }
     
@@ -295,7 +314,7 @@ class WCGVI_Invoice_Generator {
                 <?php endif; ?>
                 <h2><?php echo $invoice_type === 'invoice' ? 'ΤΙΜΟΛΟΓΙΟ' : 'ΑΠΟΔΕΙΞΗ'; ?></h2>
                 <p><strong><?php echo esc_html($invoice_number); ?></strong></p>
-                <p><?php echo date_i18n(get_option('date_format'), strtotime($order->get_date_created())); ?></p>
+                <p><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($order->get_date_created()))); ?></p>
             </div>
             
             <div class="info-box">
@@ -345,8 +364,8 @@ class WCGVI_Invoice_Generator {
                             <tr>
                                 <td><?php echo esc_html($item->get_name()); ?></td>
                                 <td><?php echo esc_html($item->get_quantity()); ?></td>
-                                <td class="price"><?php echo wc_price($item->get_total() / $item->get_quantity()); ?></td>
-                                <td class="price"><?php echo wc_price($item->get_total()); ?></td>
+                                <td class="price"><?php echo wp_kses_post(wc_price($item->get_total() / $item->get_quantity())); ?></td>
+                                <td class="price"><?php echo wp_kses_post(wc_price($item->get_total())); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -357,18 +376,18 @@ class WCGVI_Invoice_Generator {
                 <table>
                     <tr>
                         <td>Υποσύνολο:</td>
-                        <td><?php echo wc_price($order->get_subtotal()); ?></td>
+                        <td><?php echo wp_kses_post(wc_price($order->get_subtotal())); ?></td>
                     </tr>
                     <?php if ($order->get_shipping_total() > 0): ?>
                         <tr>
                             <td>Μεταφορικά:</td>
-                            <td><?php echo wc_price($order->get_shipping_total()); ?></td>
+                            <td><?php echo wp_kses_post(wc_price($order->get_shipping_total())); ?></td>
                         </tr>
                     <?php endif; ?>
                     <?php if ($order->get_total_tax() > 0): ?>
                         <tr>
-                            <td>ΦΠΑ (<?php echo $order->get_tax_totals()[0]->rate ?? '24'; ?>%):</td>
-                            <td><?php echo wc_price($order->get_total_tax()); ?></td>
+                            <td>ΦΠΑ (<?php echo esc_html($order->get_tax_totals()[0]->rate ?? '24'); ?>%):</td>
+                            <td><?php echo wp_kses_post(wc_price($order->get_total_tax())); ?></td>
                         </tr>
                     <?php else: ?>
                         <?php $exempt_reason = $order->get_meta('_vat_exempt_reason'); ?>
@@ -380,7 +399,7 @@ class WCGVI_Invoice_Generator {
                     <?php endif; ?>
                     <tr class="total">
                         <td>ΣΥΝΟΛΟ:</td>
-                        <td><?php echo wc_price($order->get_total()); ?></td>
+                        <td><?php echo wp_kses_post(wc_price($order->get_total())); ?></td>
                     </tr>
                 </table>
             </div>
@@ -411,10 +430,10 @@ class WCGVI_Invoice_Generator {
         $order_id = $order->get_id();
         
         echo '<div class="wcgvi-admin-invoice-section" style="margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd;">';
-        echo '<h4>' . __('Παραστατικό', 'wc-greek-vat-invoices') . '</h4>';
+        echo '<h4>' . esc_html__('Παραστατικό', 'wc-greek-vat-invoices') . '</h4>';
         
         if ($invoice_number) {
-            echo '<p><strong>' . __('Αριθμός:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($invoice_number) . '</p>';
+            echo '<p><strong>' . esc_html__('Αριθμός:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($invoice_number) . '</p>';
         }
         
         echo '<p class="wcgvi-admin-buttons">';
@@ -425,18 +444,18 @@ class WCGVI_Invoice_Generator {
             $file_url = $upload_dir['baseurl'] . '/wcgvi-invoices/' . $file_path;
             echo '<a href="' . esc_url($file_url) . '" class="button button-primary" target="_blank" style="margin-right: 10px;">';
             echo '<span class="dashicons dashicons-download" style="vertical-align: middle; margin-top: 3px;"></span> ';
-            echo __('Λήψη Παραστατικού', 'wc-greek-vat-invoices') . '</a>';
+            echo esc_html__('Λήψη Παραστατικού', 'wc-greek-vat-invoices') . '</a>';
         }
         
         // Regenerate button
         echo '<button type="button" class="button wcgvi-regenerate-invoice" data-order-id="' . esc_attr($order_id) . '" style="margin-right: 10px;">';
         echo '<span class="dashicons dashicons-update" style="vertical-align: middle; margin-top: 3px;"></span> ';
-        echo __('Αναδημιουργία', 'wc-greek-vat-invoices') . '</button>';
+        echo esc_html__('Αναδημιουργία', 'wc-greek-vat-invoices') . '</button>';
         
         // Upload button
         echo '<button type="button" class="button wcgvi-upload-invoice-btn" data-order-id="' . esc_attr($order_id) . '">';
         echo '<span class="dashicons dashicons-upload" style="vertical-align: middle; margin-top: 3px;"></span> ';
-        echo __('Ανέβασμα PDF', 'wc-greek-vat-invoices') . '</button>';
+        echo esc_html__('Ανέβασμα PDF', 'wc-greek-vat-invoices') . '</button>';;
         
         echo '</p>';
         

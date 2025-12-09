@@ -56,7 +56,8 @@ class WCGVI_Order_Handler {
         
         // Check VIES exemption (EU but not Greece)
         if ($country !== 'GR' && get_option('wcgvi_vat_exempt_eu') === 'yes') {
-            $vies_validated = isset($_POST['vies_validated']) && $_POST['vies_validated'] === 'true';
+            // Nonce is verified by WooCommerce checkout process
+            $vies_validated = isset($_POST['vies_validated']) && sanitize_text_field(wp_unslash($_POST['vies_validated'])) === 'true'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
             if ($vies_validated) {
                 $should_exempt = true;
                 $order->add_meta_data('_vat_exempt_reason', 'VIES validated - Intra-EU supply');
@@ -72,7 +73,8 @@ class WCGVI_Order_Handler {
         
         // Check Article 39a exemption
         if (get_option('wcgvi_vat_exempt_39a') === 'yes') {
-            $exempt_39a = isset($_POST['vat_exempt_39a']) && $_POST['vat_exempt_39a'] === 'true';
+            // Nonce is verified by WooCommerce checkout process
+            $exempt_39a = isset($_POST['vat_exempt_39a']) && sanitize_text_field(wp_unslash($_POST['vat_exempt_39a'])) === 'true'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
             if ($exempt_39a) {
                 $should_exempt = true;
                 $order->add_meta_data('_vat_exempt_reason', 'Article 39a (ΠΟΛ.1150/2017)');
@@ -104,11 +106,12 @@ class WCGVI_Order_Handler {
      * Save VIES validation status
      */
     public function save_vies_status($order_id) {
-        if (isset($_POST['vies_validated']) && $_POST['vies_validated'] === 'true') {
+        // Nonce is verified by WooCommerce checkout process
+        if (isset($_POST['vies_validated']) && sanitize_text_field(wp_unslash($_POST['vies_validated'])) === 'true') { // phpcs:ignore WordPress.Security.NonceVerification.Missing
             update_post_meta($order_id, '_vies_validated', 'yes');
         }
         
-        if (isset($_POST['vat_exempt_39a']) && $_POST['vat_exempt_39a'] === 'true') {
+        if (isset($_POST['vat_exempt_39a']) && sanitize_text_field(wp_unslash($_POST['vat_exempt_39a'])) === 'true') { // phpcs:ignore WordPress.Security.NonceVerification.Missing
             update_post_meta($order_id, '_vat_exempt_39a', 'yes');
         }
     }
@@ -134,7 +137,7 @@ class WCGVI_Order_Handler {
         
         // Get next invoice number
         $prefix = get_option('wcgvi_invoice_prefix', 'INV');
-        $year = date('Y');
+        $year = gmdate('Y');
         $counter_key = 'wcgvi_invoice_counter_' . $year;
         
         $counter = get_option($counter_key, 0);

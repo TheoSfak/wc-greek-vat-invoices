@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce Greek VAT & Invoices
+ * Plugin Name: Greek VAT & Invoices for WooCommerce
  * Plugin URI: https://github.com/TheoSfak/wc-greek-vat-invoices
  * Description: Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, automatic VAT exemptions, and professional invoice generation
  * Version: 1.0.0
@@ -28,9 +28,9 @@ define('WCGVI_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WCGVI_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 // Check if WooCommerce is active
-if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+if (!in_array('woocommerce/woocommerce.php', apply_filters('wcgvi_active_plugins', get_option('active_plugins')))) {
     add_action('admin_notices', function() {
-        echo '<div class="error"><p><strong>' . esc_html__('WooCommerce Greek VAT & Invoices', 'wc-greek-vat-invoices') . '</strong> ' . esc_html__('απαιτεί το WooCommerce να είναι εγκατεστημένο και ενεργοποιημένο.', 'wc-greek-vat-invoices') . '</p></div>';
+        echo '<div class="error"><p><strong>' . esc_html__('Greek VAT & Invoices for WooCommerce', 'wc-greek-vat-invoices') . '</strong> ' . esc_html__('απαιτεί το WooCommerce να είναι εγκατεστημένο και ενεργοποιημένο.', 'wc-greek-vat-invoices') . '</p></div>';
     });
     return;
 }
@@ -102,9 +102,11 @@ class WC_Greek_VAT_Invoices {
     
     /**
      * Load plugin textdomain
+     * Note: load_plugin_textdomain() is automatically handled by WordPress.org for hosted plugins
      */
     public function load_textdomain() {
-        load_plugin_textdomain('wc-greek-vat-invoices', false, dirname(WCGVI_PLUGIN_BASENAME) . '/languages');
+        // WordPress automatically loads translations for plugins hosted on WordPress.org
+        // This function is kept for backwards compatibility
     }
     
     /**

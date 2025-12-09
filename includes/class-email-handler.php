@@ -79,7 +79,8 @@ class WCGVI_Email_Handler {
         
         // Email subject
         $subject = sprintf(
-            __('%s - Order #%s - %s %s', 'wc-greek-vat-invoices'),
+            /* translators: 1: Site name, 2: Order number, 3: Document type (Invoice/Receipt), 4: Invoice number */
+            __('%1$s - Order #%2$s - %3$s %4$s', 'wc-greek-vat-invoices'),
             get_bloginfo('name'),
             $order->get_order_number(),
             $invoice_type === 'invoice' ? __('Invoice', 'wc-greek-vat-invoices') : __('Receipt', 'wc-greek-vat-invoices'),
@@ -105,6 +106,7 @@ class WCGVI_Email_Handler {
             // Add order note
             $order->add_order_note(
                 sprintf(
+                    /* translators: %s: Invoice number */
                     __('Invoice/Receipt %s sent to customer via email.', 'wc-greek-vat-invoices'),
                     $invoice_number
                 )
@@ -181,8 +183,8 @@ class WCGVI_Email_Handler {
                     <p>Παρακαλούμε βρείτε συνημμένα <?php echo $invoice_type === 'invoice' ? 'το τιμολόγιο' : 'την απόδειξη'; ?> για την παραγγελία σας #<?php echo esc_html($order->get_order_number()); ?>.</p>
                     
                     <p><strong>Αριθμός Παραστατικού:</strong> <?php echo esc_html($invoice_number); ?><br>
-                    <strong>Ημερομηνία:</strong> <?php echo date_i18n(get_option('date_format'), strtotime($order->get_date_created())); ?><br>
-                    <strong>Σύνολο:</strong> <?php echo wc_price($order->get_total()); ?></p>
+                    <strong>Ημερομηνία:</strong> <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($order->get_date_created()))); ?><br>
+                    <strong>Σύνολο:</strong> <?php echo wp_kses_post(wc_price($order->get_total())); ?></p>
                     
                     <p style="text-align: center;">
                         <a href="<?php echo esc_url($order->get_view_order_url()); ?>" class="button">
@@ -255,7 +257,7 @@ class WCGVI_Email_Handler {
         $doc_type = $invoice_type === 'invoice' ? 'Τιμολόγιο' : 'Απόδειξη';
         
         if ($plain_text) {
-            echo "\n\n" . $doc_type . ': ' . $invoice_number . "\n\n";
+            echo "\n\n" . esc_html($doc_type) . ': ' . esc_html($invoice_number) . "\n\n";
         } else {
             echo '<h3>' . esc_html($doc_type) . ': ' . esc_html($invoice_number) . '</h3>';
         }
