@@ -229,21 +229,26 @@ class WCGVI_Checkout_Fields {
         $vat_number = $order->get_meta('_billing_vat_number');
         $doy = $order->get_meta('_billing_doy');
         $activity = $order->get_meta('_billing_business_activity');
+        $company = $order->get_billing_company();
         
         if ($invoice_type === 'invoice') {
             echo '<div class="wcgvi-admin-invoice-fields">';
-            echo '<h3>' . esc_html__('Invoice Details', 'wc-greek-vat-invoices') . '</h3>';
+            echo '<h3>' . esc_html__('Στοιχεία Τιμολογίου', 'wc-greek-vat-invoices') . '</h3>';
+            
+            if ($company) {
+                echo '<p><strong>' . esc_html__('Επωνυμία:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($company) . '</p>';
+            }
             
             if ($vat_number) {
-                echo '<p><strong>' . esc_html__('VAT Number:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($vat_number) . '</p>';
+                echo '<p><strong>' . esc_html__('ΑΦΜ:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($vat_number) . '</p>';
             }
             
             if ($doy) {
-                echo '<p><strong>' . esc_html__('Tax Office:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($doy) . '</p>';
+                echo '<p><strong>' . esc_html__('ΔΟΥ:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($doy) . '</p>';
             }
             
             if ($activity) {
-                echo '<p><strong>' . esc_html__('Business Activity:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($activity) . '</p>';
+                echo '<p><strong>' . esc_html__('Επάγγελμα:', 'wc-greek-vat-invoices') . '</strong> ' . esc_html($activity) . '</p>';
             }
             
             echo '</div>';
@@ -259,18 +264,26 @@ class WCGVI_Checkout_Fields {
         $invoice_type = $order->get_meta('_billing_invoice_type');
         
         if ($invoice_type === 'invoice') {
+            $company = $order->get_billing_company();
+            if ($company) {
+                $fields['billing_company'] = array(
+                    'label' => __('Επωνυμία', 'wc-greek-vat-invoices'),
+                    'value' => $company
+                );
+            }
+            
             $fields['billing_vat_number'] = array(
-                'label' => __('VAT Number', 'wc-greek-vat-invoices'),
+                'label' => __('ΑΦΜ', 'wc-greek-vat-invoices'),
                 'value' => $order->get_meta('_billing_vat_number')
             );
             
             $fields['billing_doy'] = array(
-                'label' => __('Tax Office', 'wc-greek-vat-invoices'),
+                'label' => __('ΔΟΥ', 'wc-greek-vat-invoices'),
                 'value' => $order->get_meta('_billing_doy')
             );
             
             $fields['billing_business_activity'] = array(
-                'label' => __('Business Activity', 'wc-greek-vat-invoices'),
+                'label' => __('Επάγγελμα', 'wc-greek-vat-invoices'),
                 'value' => $order->get_meta('_billing_business_activity')
             );
         }
