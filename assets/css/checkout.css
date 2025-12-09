@@ -74,6 +74,15 @@
     border: 1px solid #e0e0e0;
 }
 
+/* Also hide the billing_company field wrapper */
+#billing_company_field.wcgvi-invoice-fields {
+    display: none;
+    background: transparent;
+    padding: 0;
+    border: none;
+    margin: 0;
+}
+
 .wcgvi-invoice-fields.visible {
     display: block;
 }

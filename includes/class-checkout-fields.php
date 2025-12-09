@@ -80,10 +80,14 @@ class WCGVI_Checkout_Fields {
             'default' => 'receipt'
         );
         
-        // Company name
+        // Company name - configure existing WooCommerce field
         $fields['billing']['billing_company']['label'] = __('Επωνυμία Επιχείρησης', 'wc-greek-vat-invoices');
         $fields['billing']['billing_company']['placeholder'] = __('π.χ. ΚΩΝΣΤΑΝΤΙΝΟΣ ΠΑΠΑΔΟΠΟΥΛΟΣ & ΣΙΑ ΟΕ', 'wc-greek-vat-invoices');
-        $fields['billing']['billing_company']['class'] = array('form-row-wide', 'wcgvi-invoice-fields');
+        if (!isset($fields['billing']['billing_company']['class'])) {
+            $fields['billing']['billing_company']['class'] = array();
+        }
+        $fields['billing']['billing_company']['class'][] = 'form-row-wide';
+        $fields['billing']['billing_company']['class'][] = 'wcgvi-invoice-fields';
         $fields['billing']['billing_company']['required'] = false;
         $fields['billing']['billing_company']['priority'] = $invoice_type_priority + 1;
         
