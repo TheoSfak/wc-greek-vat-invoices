@@ -153,6 +153,25 @@ class WCGVI_Checkout_Fields {
             return;
         }
         
+        // Get allowed categories
+        $allowed_categories = get_option('wcgvi_article_39a_categories', array());
+        $categories_text = '';
+        
+        if (!empty($allowed_categories)) {
+            $category_names = array();
+            foreach ($allowed_categories as $cat_id) {
+                $term = get_term($cat_id, 'product_cat');
+                if ($term && !is_wp_error($term)) {
+                    $category_names[] = $term->name;
+                }
+            }
+            if (!empty($category_names)) {
+                $categories_text = '<li>📦 ' . esc_html__('Ισχύει για τις κατηγορίες:', 'wc-greek-vat-invoices') . ' <strong>' . esc_html(implode(', ', $category_names)) . '</strong></li>';
+            }
+        } else {
+            $categories_text = '<li>✓ ' . esc_html__('Ισχύει για όλες τις κατηγορίες προϊόντων/υπηρεσιών', 'wc-greek-vat-invoices') . '</li>';
+        }
+        
         echo '<div class="wcgvi-article-39a-wrapper wcgvi-invoice-fields" style="display:none;">';
         echo '<div class="wcgvi-article-39a-checkbox-field">';
         echo '<label class="wcgvi-article-39a-label">';
@@ -165,7 +184,7 @@ class WCGVI_Checkout_Fields {
         echo '<li>✓ ' . esc_html__('Ελληνική επιχείρηση με έδρα στην Ελλάδα', 'wc-greek-vat-invoices') . '</li>';
         echo '<li>✓ ' . esc_html__('Ετήσιος τζίρος μικρότερος των 10.000€', 'wc-greek-vat-invoices') . '</li>';
         echo '<li>✓ ' . esc_html__('Μη υπέρβαση ορίου κατά το τρέχον έτος', 'wc-greek-vat-invoices') . '</li>';
-        echo '<li>✓ ' . esc_html__('Ισχύει για όλες τις κατηγορίες προϊόντων/υπηρεσιών', 'wc-greek-vat-invoices') . '</li>';
+        echo wp_kses_post($categories_text);
         echo '</ul>';
         echo '<p class="wcgvi-article-39a-warning">';
         echo '<em>' . esc_html__('⚠️ Η επιλογή αυτής της απαλλαγής είναι ευθύνη της επιχείρησης. Βεβαιωθείτε ότι πληροίτε τις προϋποθέσεις πριν την επιλέξετε.', 'wc-greek-vat-invoices') . '</em>';

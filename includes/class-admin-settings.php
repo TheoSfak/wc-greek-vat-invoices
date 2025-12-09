@@ -227,6 +227,20 @@ class WCGVI_Admin_Settings {
             ),
             
             array(
+                'title' => __('Κατηγορίες Προϊόντων με Απαλλαγή 39α', 'wc-greek-vat-invoices'),
+                'desc' => __('Επιλέξτε τις κατηγορίες προϊόντων για τις οποίες ισχύει η απαλλαγή άρθρου 39α. Αν δεν επιλέξετε τίποτα, θα ισχύει για όλες τις κατηγορίες.', 'wc-greek-vat-invoices'),
+                'id' => 'wcgvi_article_39a_categories',
+                'type' => 'multiselect',
+                'class' => 'wc-enhanced-select',
+                'css' => 'min-width:300px;',
+                'default' => array(),
+                'options' => $this->get_product_categories(),
+                'custom_attributes' => array(
+                    'data-placeholder' => __('Όλες οι κατηγορίες (προεπιλογή)', 'wc-greek-vat-invoices')
+                )
+            ),
+            
+            array(
                 'type' => 'sectionend',
                 'id' => 'wcgvi_exemption_settings'
             ),
@@ -542,7 +556,29 @@ class WCGVI_Admin_Settings {
     }
     
     /**
-     * Test VIES connection
+     * Get all product categories for settings
+     */
+    private function get_product_categories() {
+        $categories = array();
+        
+        $terms = get_terms(array(
+            'taxonomy' => 'product_cat',
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ));
+        
+        if (!is_wp_error($terms) && !empty($terms)) {
+            foreach ($terms as $term) {
+                $categories[$term->term_id] = $term->name;
+            }
+        }
+        
+        return $categories;
+    }
+    
+    /**
+     * AJAX handler for testing VIES connection
      */
     public function ajax_test_vies() {
         check_ajax_referer('wcgvi_admin_nonce', 'nonce');

@@ -76,8 +76,13 @@ class WCGVI_Order_Handler {
             // Nonce is verified by WooCommerce checkout process
             $exempt_39a = isset($_POST['vat_exempt_39a']) && sanitize_text_field(wp_unslash($_POST['vat_exempt_39a'])) === 'true'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
             if ($exempt_39a) {
-                $should_exempt = true;
-                $order->add_meta_data('_vat_exempt_reason', 'Απαλλαγή Άρθρου 39α (ΠΟΛ.1150/2017)');
+                // Check if products are in allowed categories
+                $allowed_categories = get_option('wcgvi_article_39a_categories', array());
+                
+                if ($this->check_article_39a_eligible($order, $allowed_categories)) {
+                    $should_exempt = true;
+                    $order->add_meta_data('_vat_exempt_reason', 'Απαλλαγή Άρθρου 39α (ΠΟΛ.1150/2017)');
+                }
             }
         }
         
@@ -202,5 +207,42 @@ class WCGVI_Order_Handler {
             
             echo '</div>';
         }
+    }
+    
+    /**
+     * Check if order is eligible for Article 39a exemption based on product categories
+     */
+    private function check_article_39a_eligible($order, $allowed_categories) {
+        // If no categories are selected, allow all products
+        if (empty($allowed_categories)) {
+            return true;
+        }
+        
+        // Check each product in the order
+        foreach ($order->get_items() as $item) {
+            $product = $item->get_product();
+            if (!$product) {
+                continue;
+            }
+            
+            // Get product category IDs
+            $product_category_ids = $product->get_category_ids();
+            
+            // Check if product belongs to any allowed category
+            $is_allowed = false;
+            foreach ($product_category_ids as $cat_id) {
+                if (in_array($cat_id, $allowed_categories)) {
+                    $is_allowed = true;
+                    break;
+                }
+            }
+            
+            // If any product is not in allowed categories, reject exemption
+            if (!$is_allowed) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }
