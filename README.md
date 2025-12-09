@@ -4,7 +4,7 @@ Tags: woocommerce, greece, vat, invoices, aade
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,26 @@ Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, a
 
 == Changelog ==
 
+= 1.0.5 =
+* Added: Product category selection for Article 39α VAT exemption
+* Added: Admin multiselect field to declare eligible product categories
+* Added: Backend validation to check all products in cart against allowed categories
+* Added: Dynamic frontend notice showing applicable product categories
+* Improved: Article 39α exemption now strictly validates entire cart composition
+
+= 1.0.4 =
+* Added: Article 39α VAT exemption for small businesses (ΠΟΛ.1150/2017)
+* Added: Checkbox with detailed conditions at checkout
+* Added: Live notice when Article 39α is selected
+* Updated: PDF footer with AAΔΕ compliance notice
+
+= 1.0.3 =
+* Fixed: WordPress coding standards compliance
+* Fixed: Checkout fatal errors
+* Fixed: Greek character encoding in PDFs
+* Improved: PDF design with company logo and branding
+* Migrated: PDF library from TCPDF to Dompdf v3.0.0
+
 = 1.0.0 =
 * Initial release
 
@@ -44,7 +64,7 @@ Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, a
 
 # Greek VAT & Invoices for WooCommerce
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-blue.svg)
 ![WooCommerce](https://img.shields.io/badge/woocommerce-3.0%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-green.svg)
@@ -66,7 +86,9 @@ Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, a
 - ✅ **Non-EU Export**: Απαλλαγή ΦΠΑ για εξαγωγές εκτός ΕΕ
 - ✅ **Article 39a**: Υποστήριξη άρθρου 39α για μικρές επιχειρήσεις (ΠΟΛ.1150/2017)
   - Checkbox στο checkout για Ελληνικές επιχειρήσεις
-  - Αυτόματη αφαίρεση ΦΠΑ από παραγγελία
+  - **Επιλογή Κατηγοριών Προϊόντων**: Ο διαχειριστής δηλώνει ποιες κατηγορίες προϊόντων υπάγονται στην απαλλαγή
+  - Αυτόματος έλεγχος όλων των προϊόντων στο καλάθι
+  - Αυτόματη αφαίρεση ΦΠΑ μόνο αν όλα τα προϊόντα ανήκουν σε επιλεγμένες κατηγορίες
   - Σημείωση στο παραστατικό
 
 ### 📄 PDF Generation
@@ -132,6 +154,10 @@ git clone https://github.com/TheoSfak/wc-greek-vat-invoices.git
 - ✅ **Enable VIES Exemption**: Απαλλαγή ΦΠΑ για validated EU businesses
 - ✅ **Enable Non-EU Exemption**: Απαλλαγή ΦΠΑ για εξαγωγές εκτός ΕΕ
 - ✅ **Enable Article 39a**: Απαλλαγή άρθρου 39α
+- 📦 **Article 39a Product Categories**: Επιλογή κατηγοριών προϊόντων που υπάγονται στην απαλλαγή
+  - Αφήστε κενό για όλες τις κατηγορίες (προεπιλογή)
+  - Επιλέξτε συγκεκριμένες κατηγορίες για περιορισμό
+  - Όλα τα προϊόντα στο καλάθι πρέπει να ανήκουν σε επιλεγμένες κατηγορίες
 
 #### Invoice Numbering
 - 📝 **Invoice Prefix**: Πρόθεμα τιμολογίων (π.χ. INV, TIM)
