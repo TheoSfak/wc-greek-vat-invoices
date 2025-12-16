@@ -145,7 +145,7 @@ This plugin validates VAT numbers through external services (AADE and VIES) whic
 == Support ==
 
 For support, feature requests, or bug reports, please visit:
-https://github.com/TheoSfak/greek-vat-invoices-for-woocommerce/issues
+https://github.com/TheoSfak/greek-vat-invoices-for-woo/issues
 
 == Donations ==
 

@@ -35,8 +35,8 @@
         ]
     },
     "support": {
-        "issues": "https://github.com/TheoSfak/wc-greek-vat-invoices/issues",
-        "source": "https://github.com/TheoSfak/wc-greek-vat-invoices"
+        "issues": "https://github.com/TheoSfak/greek-vat-invoices-for-woo/issues",
+        "source": "https://github.com/TheoSfak/greek-vat-invoices-for-woo"
     },
     "config": {
         "optimize-autoloader": true,

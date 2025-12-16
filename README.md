@@ -132,7 +132,7 @@ Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, a
 ### Μέθοδος 3: Git
 ```bash
 cd wp-content/plugins
-git clone https://github.com/TheoSfak/wc-greek-vat-invoices.git
+git clone https://github.com/TheoSfak/greek-vat-invoices-for-woo.git
 ```
 
 ## ⚙️ Ρυθμίσεις / Configuration
@@ -429,8 +429,8 @@ If you find this plugin helpful, consider supporting its development:
 ## 📞 Support
 
 - 👨‍💻 Author: **Theodore Sfakianakis**
-- 🐛 Issues: [GitHub Issues](https://github.com/TheoSfak/wc-greek-vat-invoices/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/TheoSfak/wc-greek-vat-invoices/discussions)
+- 🐛 Issues: [GitHub Issues](https://github.com/TheoSfak/greek-vat-invoices-for-woo/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/TheoSfak/greek-vat-invoices-for-woo/discussions)
 - 💰 Donate: [PayPal.me/TheodoreSfakianakis](https://www.paypal.com/paypalme/TheodoreSfakianakis)
 
 ---
