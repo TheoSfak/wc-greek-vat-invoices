@@ -6,7 +6,7 @@
  * Version: 1.0.6
  * Author: Theodore Sfakianakis
  * Author URI: https://www.paypal.com/paypalme/TheodoreSfakianakis
- * Text Domain: greek-vat-invoices-for-woocommerce
+ * Text Domain: wc-greek-vat-invoices
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.0
