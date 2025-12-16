@@ -118,7 +118,7 @@ class GRVATIN_Greek_VAT_Invoices {
             wp_enqueue_style('wcgvi-checkout', GRVATIN_PLUGIN_URL . 'assets/css/checkout.css', array(), GRVATIN_VERSION);
             wp_enqueue_script('wcgvi-checkout', GRVATIN_PLUGIN_URL . 'assets/js/checkout.js', array('jquery'), GRVATIN_VERSION, true);
             
-            wp_localize_script('wcgvi-checkout', 'GRVATIN_params', array(
+            wp_localize_script('wcgvi-checkout', 'grvatin_params', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('GRVATIN_nonce'),
                 'uppercase' => get_option('GRVATIN_uppercase_fields', 'yes'),
@@ -138,7 +138,7 @@ class GRVATIN_Greek_VAT_Invoices {
             wp_enqueue_style('wcgvi-admin', GRVATIN_PLUGIN_URL . 'assets/css/admin.css', array(), GRVATIN_VERSION);
             wp_enqueue_script('wcgvi-admin', GRVATIN_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), GRVATIN_VERSION, true);
             
-            wp_localize_script('wcgvi-admin', 'GRVATIN_admin_params', array(
+            wp_localize_script('wcgvi-admin', 'grvatin_admin_params', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('GRVATIN_admin_nonce'),
                 'no_vat_text' => __('Παρακαλώ εισάγετε ΑΦΜ', 'greek-vat-invoices-for-woocommerce'),
