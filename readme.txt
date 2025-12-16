@@ -5,7 +5,7 @@ Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.0
 Requires Plugins: woocommerce
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -102,6 +102,14 @@ Absolutely! The plugin is fully translatable and includes Greek language support
 6. AADE and VIES validation settings
 
 == Changelog ==
+
+= 1.0.7 =
+* WordPress.org review compliance fixes
+* Changed contributor to correct WordPress.org username (irmaiden)
+* Added composer.json for dompdf library documentation
+* Added comprehensive External Services documentation (VIES & AADE)
+* Added ABSPATH security check to lib/autoload.php
+* Added explanatory comments for inline styles in PDF/email generation
 
 = 1.0.6 =
 * Major refactoring for WordPress.org compliance

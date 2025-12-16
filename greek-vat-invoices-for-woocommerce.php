@@ -3,7 +3,7 @@
  * Plugin Name: Greek VAT & Invoices for WooCommerce
  * Plugin URI: https://github.com/TheoSfak/greek-vat-invoices-for-woo
  * Description: Complete Greek invoicing solution for WooCommerce with AADE & VIES validation, automatic VAT exemptions, and professional invoice generation
- * Version: 1.0.6
+ * Version: 1.0.7
  * Author: Theodore Sfakianakis
  * Author URI: https://www.paypal.com/paypalme/TheodoreSfakianakis
  * Text Domain: greek-vat-invoices-for-woocommerce
@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('GRVATIN_VERSION', '1.0.6');
+define('GRVATIN_VERSION', '1.0.7');
 define('GRVATIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('GRVATIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('GRVATIN_PLUGIN_BASENAME', plugin_basename(__FILE__));
