@@ -1,0 +1,148 @@
+# Copyright (C) 2025 Theodore Sfakianakis (irmaiden)
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Greek VAT & Invoices for WooCommerce 1.0.8\n"
+"Report-Msgid-Bugs-To: https://github.com/TheoSfak/greek-vat-invoices-for-woo/issues\n"
+"POT-Creation-Date: 2025-12-17 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Manual\n"
+"X-Domain: greek-vat-invoices-for-woocommerce\n"
+
+#: includes/class-checkout-fields.php
+msgid "Τύπος Παραστατικού"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Επιλέξτε τύπο παραστατικού"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Απόδειξη"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Τιμολόγιο"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "ΑΦΜ"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Εισάγετε το ΑΦΜ σας"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "ΔΟΥ"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Εισάγετε τη ΔΟΥ σας"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Επωνυμία"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Επάγγελμα"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Εισάγετε το επάγγελμά σας"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Στοιχεία Τιμολογίου"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Document Type:"
+msgstr ""
+
+#: includes/class-checkout-fields.php
+msgid "Receipt"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Ελληνικά Τιμολόγια"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Greek VAT & Invoices Settings"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "General Settings"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Enable Invoice Selection"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Enable invoice/receipt selection at checkout"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Uppercase Conversion"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Convert company names to uppercase (AADE requirement)"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Invoice Type Field Position"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Choose where the invoice type field appears in checkout"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Top of billing form"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Before first name"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "After last name"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "After phone"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "After email"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "After country"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "After address"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "After city"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "After postcode"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Bottom of billing form"
+msgstr ""
