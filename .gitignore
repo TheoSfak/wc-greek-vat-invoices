@@ -1,0 +1,10 @@
+# WordPress.org assets (local only)
+.wordpress-org/
+
+# Composer
+composer.json
+composer.lock
+vendor/
+
+# Dependencies
+lib/
