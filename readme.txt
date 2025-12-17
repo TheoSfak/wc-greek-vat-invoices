@@ -1,6 +1,6 @@
 === Greek VAT & Invoices for WooCommerce ===
 Contributors: theodoresfakianakis
-Tags: woocommerce, greece, vat, invoices, greek, checkout, tax
+Tags: woocommerce, timologia, vat, greek, checkout
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.0
