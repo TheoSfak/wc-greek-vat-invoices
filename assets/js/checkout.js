@@ -99,7 +99,7 @@ jQuery(document).ready(function($) {
                 url: grvatin_params.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'grvatin_validate_vat',
+                    action: 'GRVATIN_validate_vat',
                     vat_number: vatNumber,
                     country: country,
                     nonce: grvatin_params.nonce

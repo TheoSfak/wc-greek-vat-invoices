@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
                 url: grvatin_admin_params.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'grvatin_validate_vat',
+                    action: 'GRVATIN_validate_vat',
                     vat_number: vatNumber,
                     country: country,
                     nonce: grvatin_admin_params.nonce
@@ -173,7 +173,7 @@ jQuery(document).ready(function($) {
                 url: grvatin_admin_params.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'grvatin_regenerate_invoice',
+                    action: 'GRVATIN_regenerate_invoice',
                     order_id: orderId,
                     nonce: grvatin_admin_params.nonce
                 },
@@ -222,7 +222,7 @@ jQuery(document).ready(function($) {
                 }
                 
                 var formData = new FormData();
-                formData.append('action', 'grvatin_upload_invoice');
+                formData.append('action', 'GRVATIN_upload_invoice');
                 formData.append('order_id', orderId);
                 formData.append('invoice_file', file);
                 formData.append('nonce', grvatin_admin_params.nonce);
