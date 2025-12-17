@@ -50,16 +50,32 @@ jQuery(document).ready(function($) {
             // Get value from radio buttons or select
             var invoiceType = $('input[name="billing_invoice_type"]:checked').val() || $('#billing_invoice_type').val();
             var $invoiceFields = $('.grvatin-invoice-fields');
+            var $companyField = $('#billing_company_field');
             var $article39aWrapper = $('.grvatin-article-39a-wrapper');
             
             if (invoiceType === 'invoice') {
                 $invoiceFields.addClass('visible').slideDown(300);
-                
+                $companyField.addClass('visible').slideDown(300);
+
                 // Show Article 39a checkbox only for Greek businesses
                 var country = $('#billing_country').val();
                 if (country === 'GR' && $article39aWrapper.length) {
                     $article39aWrapper.slideDown(300);
                 }
+                $invoiceFields.find('input').prop('required', true);
+                $companyField.find('input').prop('required', true);
+            } else {
+                $invoiceFields.removeClass('visible').slideUp(300);
+                $companyField.removeClass('visible').slideUp(300);
+                $invoiceFields.find('input').prop('required', false);
+                $companyField.find('input').prop('required', false).val('');
+                $article39aWrapper.slideUp(300);
+                // Uncheck and clear Article 39a
+                $('#grvatin_article_39a_checkbox').prop('checked', false);
+                $('#vat_exempt_39a').val('false');
+                $('.grvatin-article-39a-live-notice').remove();
+            }
+        }
                 $invoiceFields.find('input').prop('required', true);
             } else {
                 $invoiceFields.removeClass('visible').slideUp(300);
@@ -222,3 +238,4 @@ jQuery(document).ready(function($) {
         grvatinCheckout.toggleInvoiceFields();
     });
 });
+

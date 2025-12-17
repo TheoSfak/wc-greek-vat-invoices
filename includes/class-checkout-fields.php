@@ -90,7 +90,7 @@ class GRVATIN_Checkout_Fields {
             $fields['billing']['billing_company']['class'] = array();
         }
         $fields['billing']['billing_company']['class'][] = 'form-row-wide';
-        $fields['billing']['billing_company']['class'][] = 'wcgvi-invoice-fields';
+        $fields['billing']['billing_company']['class'][] = 'grvatin-invoice-fields';
         $fields['billing']['billing_company']['class'][] = 'hidden-by-default';
         $fields['billing']['billing_company']['required'] = false;
         $fields['billing']['billing_company']['priority'] = $invoice_type_priority + 1;
@@ -104,7 +104,7 @@ class GRVATIN_Checkout_Fields {
             'label' => __('ΑΦΜ', 'greek-vat-invoices-for-woocommerce'),
             'placeholder' => __('π.χ. 123456789', 'greek-vat-invoices-for-woocommerce'),
             'required' => false,
-            'class' => array('form-row-first', 'wcgvi-invoice-fields', 'wcgvi-vat-number'),
+            'class' => array('form-row-first', 'grvatin-invoice-fields', 'wcgvi-vat-number'),
             'priority' => $invoice_type_priority + 2,
             'maxlength' => 9,
             'custom_attributes' => array(
@@ -119,7 +119,7 @@ class GRVATIN_Checkout_Fields {
             'label' => __('ΔΟΥ', 'greek-vat-invoices-for-woocommerce'),
             'placeholder' => __('π.χ. Α\' ΑΘΗΝΩΝ', 'greek-vat-invoices-for-woocommerce'),
             'required' => false,
-            'class' => array('form-row-last', 'wcgvi-invoice-fields'),
+            'class' => array('form-row-last', 'grvatin-invoice-fields'),
             'priority' => $invoice_type_priority + 3
         );
         
@@ -129,7 +129,7 @@ class GRVATIN_Checkout_Fields {
             'label' => __('Επάγγελμα', 'greek-vat-invoices-for-woocommerce'),
             'placeholder' => __('π.χ. ΛΙΑΝΙΚΟ ΕΜΠΟΡΙΟ', 'greek-vat-invoices-for-woocommerce'),
             'required' => false,
-            'class' => array('form-row-wide', 'wcgvi-invoice-fields'),
+            'class' => array('form-row-wide', 'grvatin-invoice-fields'),
             'priority' => $invoice_type_priority + 4
         );
         
@@ -172,7 +172,7 @@ class GRVATIN_Checkout_Fields {
             $categories_text = '<li>✓ ' . esc_html__('Ισχύει για όλες τις κατηγορίες προϊόντων/υπηρεσιών', 'greek-vat-invoices-for-woocommerce') . '</li>';
         }
         
-        echo '<div class="wcgvi-article-39a-wrapper wcgvi-invoice-fields" style="display:none;">';
+        echo '<div class="wcgvi-article-39a-wrapper grvatin-invoice-fields" style="display:none;">';
         echo '<div class="wcgvi-article-39a-checkbox-field">';
         echo '<label class="wcgvi-article-39a-label">';
         echo '<input type="checkbox" id="GRVATIN_article_39a_checkbox" name="GRVATIN_article_39a_checkbox" value="1" />';
