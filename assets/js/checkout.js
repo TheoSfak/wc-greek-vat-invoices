@@ -91,11 +91,23 @@ jQuery(document).ready(function($) {
             
             // Clear previous validation
             grvatinCheckout.clearValidation();
-            
+
+            // Real-time validation for Greek VAT (must be exactly 9 digits)
+            if (vatNumber && country === 'GR') {
+                // Remove non-numeric characters
+                var cleanVat = vatNumber.replace(/[^0-9]/g, '');
+                
+                if (cleanVat.length > 0 && cleanVat.length !== 9) {
+                    $vatField.after('<span class="grvatin-invalid">✗ Το ΑΦΜ πρέπει να είναι ακριβώς 9 ψηφία</span>');
+                    $vatField.addClass('grvatin-field-invalid');
+                    return;
+                }
+            }
+
             if (!vatNumber || vatNumber.length < 8) {
                 return;
             }
-            
+
             // Show loading
             $vatField.after('<span class="grvatin-loading">' + grvatin_params.validating_text + '</span>');
             $vatField.prop('disabled', true);
