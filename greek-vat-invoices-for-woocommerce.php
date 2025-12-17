@@ -77,9 +77,9 @@ class GRVATIN_Greek_VAT_Invoices {
     private function load_dependencies() {
         require_once GRVATIN_PLUGIN_DIR . 'includes/class-checkout-fields.php';
         require_once GRVATIN_PLUGIN_DIR . 'includes/class-vat-validator.php';
-        require_once GRVATIN_PLUGIN_DIR . 'includes/class-invoice-generator.php';
+        // require_once GRVATIN_PLUGIN_DIR . 'includes/class-invoice-generator.php'; // Disabled in v1.0.8 - Coming in future version
         require_once GRVATIN_PLUGIN_DIR . 'includes/class-admin-settings.php';
-        require_once GRVATIN_PLUGIN_DIR . 'includes/class-email-handler.php';
+        // require_once GRVATIN_PLUGIN_DIR . 'includes/class-email-handler.php'; // Disabled in v1.0.8 - Coming in future version
         require_once GRVATIN_PLUGIN_DIR . 'includes/class-order-handler.php';
     }
     
@@ -95,9 +95,9 @@ class GRVATIN_Greek_VAT_Invoices {
         // Initialize components
         GRVATIN_Checkout_Fields::get_instance();
         GRVATIN_VAT_Validator::get_instance();
-        grvatin_invoice_Generator::get_instance();
+        // grvatin_invoice_Generator::get_instance(); // Disabled in v1.0.8 - Coming in future version
         GRVATIN_Admin_Settings::get_instance();
-        GRVATIN_Email_Handler::get_instance();
+        // GRVATIN_Email_Handler::get_instance(); // Disabled in v1.0.8 - Coming in future version
         GRVATIN_Order_Handler::get_instance();
     }
     
