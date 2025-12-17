@@ -20,11 +20,21 @@ jQuery(document).ready(function($) {
                 grvatinCheckout.toggleInvoiceFields();
             });
             
+            // VAT field - allow only numbers
+            $(document).on('input', '#billing_vat_number', function() {
+                var value = $(this).val();
+                // Remove any non-numeric characters
+                var cleaned = value.replace(/[^0-9]/g, '');
+                if (value !== cleaned) {
+                    $(this).val(cleaned);
+                }
+            });
+
             // VAT validation on blur
             $(document).on('blur', '#billing_vat_number', function() {
                 grvatinCheckout.validateVAT();
             });
-            
+
             // Country change - clear validation
             $(document).on('change', '#billing_country', function() {
                 grvatinCheckout.clearValidation();
