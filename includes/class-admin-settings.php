@@ -74,7 +74,114 @@ class GRVATIN_Admin_Settings {
      * Output settings
      */
     public function output_settings() {
+        // Custom header with styling
+        echo '<style>
+            .grvatin-settings-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 30px;
+                margin: 20px 0;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            .grvatin-settings-header h2 {
+                margin: 0 0 10px 0;
+                color: white;
+                font-size: 28px;
+            }
+            .grvatin-settings-header p {
+                margin: 0;
+                opacity: 0.9;
+                font-size: 16px;
+            }
+            .grvatin-footer-box {
+                background: #f8f9fa;
+                border: 2px solid #e9ecef;
+                border-radius: 8px;
+                padding: 25px;
+                margin: 30px 0 20px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            .grvatin-author-info {
+                flex: 1;
+            }
+            .grvatin-author-info h3 {
+                margin: 0 0 8px 0;
+                color: #2c3e50;
+                font-size: 20px;
+            }
+            .grvatin-author-info p {
+                margin: 0;
+                color: #6c757d;
+                font-size: 14px;
+            }
+            .grvatin-author-info a {
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            .grvatin-author-info a:hover {
+                text-decoration: underline;
+            }
+            .grvatin-donate-section {
+                text-align: center;
+            }
+            .grvatin-donate-btn {
+                display: inline-block;
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white !important;
+                padding: 12px 30px;
+                border-radius: 25px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+                transition: all 0.3s ease;
+            }
+            .grvatin-donate-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+                text-decoration: none;
+            }
+            .grvatin-donate-btn i {
+                margin-right: 8px;
+            }
+            @media (max-width: 768px) {
+                .grvatin-footer-box {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                .grvatin-donate-section {
+                    margin-top: 20px;
+                }
+            }
+        </style>';
+        
+        echo '<div class="grvatin-settings-header">';
+        echo '<h2>🇬🇷 Ελληνικά Τιμολόγια & ΦΠΑ για WooCommerce</h2>';
+        echo '<p>Προσθέστε πεδία ΑΦΜ, ΔΟΥ και επιλογή Τιμολόγιο/Απόδειξη στο checkout του καταστήματός σας</p>';
+        echo '</div>';
+        
         woocommerce_admin_fields($this->get_settings());
+        
+        // Footer with author and donate button
+        echo '<div class="grvatin-footer-box">';
+        echo '<div class="grvatin-author-info">';
+        echo '<h3>👨‍💻 Δημιουργός Plugin</h3>';
+        echo '<p><strong>Theodore Sfakianakis</strong></p>';
+        echo '<p>Email: <a href="mailto:theodore.sfakianakis@gmail.com">theodore.sfakianakis@gmail.com</a></p>';
+        echo '<p>GitHub: <a href="https://github.com/TheoSfak" target="_blank">@TheoSfak</a></p>';
+        echo '</div>';
+        echo '<div class="grvatin-donate-section">';
+        echo '<a href="https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com" target="_blank" class="grvatin-donate-btn">'; 
+        echo '❤️ Υποστηρίξτε την Ανάπτυξη';
+        echo '</a>';
+        echo '<p style="margin-top: 10px; font-size: 12px; color: #6c757d;">Αν σας βοήθησε αυτό το plugin, θα χαρώ να με υποστηρίξετε!</p>';
+        echo '</div>';
+        echo '</div>';
     }
     
     /**
