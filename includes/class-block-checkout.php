@@ -105,7 +105,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 1,
-            'required'         => false,
+            'required'         => get_option('GRVATIN_require_company', 'yes') === 'yes',
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -116,7 +116,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 2,
-            'required'         => true,
+            'required'         => get_option('GRVATIN_require_vat', 'yes') === 'yes',
             'attributes'       => array(
                 'maxLength'    => 9,
                 'pattern'      => '[0-9]{9}',
@@ -132,7 +132,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 3,
-            'required'         => false,
+            'required'         => get_option('GRVATIN_require_doy', 'yes') === 'yes',
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -143,7 +143,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 4,
-            'required'         => false,
+            'required'         => get_option('GRVATIN_require_activity', 'yes') === 'yes',
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -187,7 +187,10 @@ class GRVATIN_Block_Checkout {
         }
 
         if (empty($value)) {
-            return new WP_Error('required_vat', __('Το ΑΦΜ είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'));
+            if (get_option('GRVATIN_require_vat', 'yes') === 'yes') {
+                return new WP_Error('required_vat', __('Το ΑΦΜ είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'));
+            }
+            return;
         }
 
         if (!preg_match('/^[0-9]{9}$/', $value)) {
@@ -198,14 +201,26 @@ class GRVATIN_Block_Checkout {
     /**
      * Validate fields required only for invoice type
      */
-    public function validate_invoice_required_field($value) {
+    public function validate_invoice_required_field($value, $field) {
         $invoice_type = $this->get_submitted_invoice_type();
 
         if ($invoice_type !== 'invoice') {
             return;
         }
 
-        if (empty($value)) {
+        if (!empty($value)) {
+            return;
+        }
+
+        $required_option_map = array(
+            'grvatin/company-name'      => 'GRVATIN_require_company',
+            'grvatin/doy'               => 'GRVATIN_require_doy',
+            'grvatin/business-activity' => 'GRVATIN_require_activity',
+        );
+
+        $option_id = isset($field['id'], $required_option_map[$field['id']]) ? $required_option_map[$field['id']] : null;
+
+        if ($option_id === null || get_option($option_id, 'yes') === 'yes') {
             return new WP_Error('required_field', __('Αυτό το πεδίο είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'));
         }
     }
