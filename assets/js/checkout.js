@@ -66,15 +66,17 @@ jQuery(document).ready(function($) {
             if (invoiceType === 'invoice') {
                 $invoiceFields.addClass('visible').slideDown(300);
                 $companyField.addClass('visible').slideDown(300);
-                
+
                 // Show Article 39a checkbox only for Greek businesses
                 var country = $('#billing_country').val();
                 if (country === 'GR' && $article39aWrapper.length) {
                     $article39aWrapper.slideDown(300);
                 }
-                
-                $invoiceFields.find('input').prop('required', true);
-                $companyField.find('input').prop('required', true);
+
+                $('#billing_vat_number').prop('required', grvatin_params.require_vat === 'yes');
+                $('#billing_doy').prop('required', grvatin_params.require_doy === 'yes');
+                $('#billing_business_activity').prop('required', grvatin_params.require_activity === 'yes');
+                $companyField.find('input').prop('required', grvatin_params.require_company === 'yes');
             } else {
                 $invoiceFields.removeClass('visible').slideUp(300);
                 $companyField.removeClass('visible').slideUp(300);
