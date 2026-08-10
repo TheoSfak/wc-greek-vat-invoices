@@ -1,6 +1,9 @@
 # WordPress.org assets (local only)
 .wordpress-org/
 
+# Claude Code worktrees
+.claude/worktrees/
+
 # Composer
 composer.json
 composer.lock
