@@ -2,6 +2,61 @@
  Greek VAT & Invoices for WooCommerce - What's New
 ============================================================
 
+Version 1.2.0 (2026-08-10)
+------------------------------------------------------------
+
+ ★ Per-Field Required/Optional Invoice Settings
+
+   New settings section "Υποχρεωτικά Πεδία Τιμολογίου" under
+   WooCommerce → Settings → Ελληνικά Τιμολόγια lets the store
+   admin mark each of the 4 invoice fields as required or
+   optional independently: Company Name, ΑΦΜ, ΔΟΥ, Business
+   Activity. All 4 default to required, matching prior behavior
+   for existing installs.
+
+   New options (all default 'yes'):
+   • GRVATIN_require_company
+   • GRVATIN_require_vat
+   • GRVATIN_require_doy
+   • GRVATIN_require_activity
+
+   ΑΦΜ format (9 digits) is still validated whenever a value is
+   entered, regardless of the required/optional setting.
+
+   Modified files:
+   • includes/class-admin-settings.php — new settings section
+   • includes/class-checkout-fields.php — gated PHP validation
+     and optional-label display for Classic Checkout
+   • assets/js/checkout.js — per-field required toggle
+   • includes/class-block-checkout.php — gated required flags
+     and validate callbacks for Block Checkout
+   • greek-vat-invoices-for-woocommerce.php — localized the new
+     settings to checkout.js
+
+ ★ Bug Fix: Block Checkout "(Optional)" Label Mismatch
+
+   Previously only ΑΦΜ was registered with required => true in
+   Block Checkout; Company Name, ΔΟΥ, and Business Activity were
+   registered required => false even though server-side
+   validation already rejected them empty. Block Checkout's
+   "(Optional)" label now accurately reflects each field's real
+   required setting.
+
+ ★ Bug Fix: Uppercase Conversion Setting
+
+   The "Μετατροπή σε Κεφαλαία" checkbox saved to option
+   GRVATIN_uppercase, but every consumer read
+   GRVATIN_uppercase_fields — so toggling it never had any
+   effect. The setting id now matches what's actually read.
+
+ ★ Donate Link Updated
+
+   Replaced the PayPal donate link with
+   https://paypal.me/TheodoreSfakianakis across the plugin
+   header, admin settings page, and all documentation files.
+
+------------------------------------------------------------
+
 Version 1.1.0 (2026-03-13)
 ------------------------------------------------------------
 

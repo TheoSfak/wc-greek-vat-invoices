@@ -4,7 +4,7 @@ Tags: woocommerce, timologia, timologio, greek, checkout
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,12 @@ You can donate via PayPal to help fund future features: [https://paypal.me/Theod
 
 == Changelog ==
 
+= 1.2.0 (2026-08-10) =
+* Added per-field required/optional settings for invoice fields (Company Name, ΑΦΜ, ΔΟΥ, Business Activity) — all 4 required by default
+* Fixed Block Checkout showing Company Name, ΔΟΥ, and Business Activity as "(Optional)" while the server actually required them
+* Fixed the uppercase-conversion setting not being saved under the option it was read from
+* Updated donate link
+
 = 1.1.0 (2026-03-13) =
 * Added WooCommerce Block Checkout support via Additional Checkout Fields API
 * Added checkout type setting (Classic / Block) in admin
@@ -195,6 +201,9 @@ You can donate via PayPal to help fund future features: [https://paypal.me/Theod
 * Company information fields
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+New: choose which invoice fields (Company, ΑΦΜ, ΔΟΥ, Business Activity) are required vs optional, per field. All 4 remain required by default, so behavior is unchanged unless you opt in. Also fixes the uppercase-conversion setting and updates the donate link.
 
 = 1.1.0 =
 New: WooCommerce Block Checkout support! Choose between Classic and Block checkout in settings. VAT number is now mandatory for invoices.
