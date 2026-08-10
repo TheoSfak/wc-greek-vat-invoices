@@ -198,7 +198,7 @@ class GRVATIN_Admin_Settings {
         echo '<p>GitHub: <a href="https://github.com/TheoSfak" target="_blank">@TheoSfak</a></p>';
         echo '</div>';
         echo '<div class="grvatin-donate-section">';
-        echo '<a href="https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com" target="_blank" class="grvatin-donate-btn">'; 
+        echo '<a href="https://paypal.me/TheodoreSfakianakis" target="_blank" class="grvatin-donate-btn">';
         echo '❤️ Υποστηρίξτε την Ανάπτυξη';
         echo '</a>';
         echo '<p style="margin-top: 10px; font-size: 12px; color: #6c757d;">Αν σας βοήθησε αυτό το plugin, θα χαρώ να με υποστηρίξετε!</p>';
@@ -237,7 +237,7 @@ class GRVATIN_Admin_Settings {
             array(
                 'title' => __('Μετατροπή σε Κεφαλαία', 'greek-vat-invoices-for-woocommerce'),
                 'desc' => __('Μετατροπή επωνυμίας και διεύθυνσης σε ΚΕΦΑΛΑΙΑ (απαίτηση AADE)', 'greek-vat-invoices-for-woocommerce'),
-                'id' => 'GRVATIN_uppercase',
+                'id' => 'GRVATIN_uppercase_fields',
                 'default' => 'yes',
                 'type' => 'checkbox'
             ),
@@ -294,6 +294,51 @@ class GRVATIN_Admin_Settings {
             array(
                 'type' => 'sectionend',
                 'id' => 'GRVATIN_general_settings'
+            ),
+
+            // Required Invoice Fields Section
+            array(
+                'title' => __('Υποχρεωτικά Πεδία Τιμολογίου', 'greek-vat-invoices-for-woocommerce'),
+                'type' => 'title',
+                'desc' => __('Επιλέξτε ποια πεδία θα είναι υποχρεωτικά όταν ο πελάτης επιλέξει Τιμολόγιο', 'greek-vat-invoices-for-woocommerce'),
+                'id' => 'GRVATIN_required_fields_settings'
+            ),
+
+            array(
+                'title' => __('Επωνυμία Επιχείρησης', 'greek-vat-invoices-for-woocommerce'),
+                'desc' => __('Υποχρεωτική συμπλήρωση επωνυμίας', 'greek-vat-invoices-for-woocommerce'),
+                'id' => 'GRVATIN_require_company',
+                'default' => 'yes',
+                'type' => 'checkbox'
+            ),
+
+            array(
+                'title' => __('ΑΦΜ', 'greek-vat-invoices-for-woocommerce'),
+                'desc' => __('Υποχρεωτική συμπλήρωση ΑΦΜ', 'greek-vat-invoices-for-woocommerce'),
+                'id' => 'GRVATIN_require_vat',
+                'default' => 'yes',
+                'type' => 'checkbox'
+            ),
+
+            array(
+                'title' => __('ΔΟΥ', 'greek-vat-invoices-for-woocommerce'),
+                'desc' => __('Υποχρεωτική συμπλήρωση ΔΟΥ', 'greek-vat-invoices-for-woocommerce'),
+                'id' => 'GRVATIN_require_doy',
+                'default' => 'yes',
+                'type' => 'checkbox'
+            ),
+
+            array(
+                'title' => __('Επάγγελμα', 'greek-vat-invoices-for-woocommerce'),
+                'desc' => __('Υποχρεωτική συμπλήρωση επαγγέλματος', 'greek-vat-invoices-for-woocommerce'),
+                'id' => 'GRVATIN_require_activity',
+                'default' => 'yes',
+                'type' => 'checkbox'
+            ),
+
+            array(
+                'type' => 'sectionend',
+                'id' => 'GRVATIN_required_fields_settings'
             ),
         );
 
