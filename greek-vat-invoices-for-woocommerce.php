@@ -5,7 +5,7 @@
  * Description: Add Greek VAT, DOY and Invoice/Receipt selection to WooCommerce checkout. Simple and lightweight solution for Greek e-commerce.
  * Version: 1.1.0
  * Author: Theodore Sfakianakis (irmaiden)
- * Author URI: https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com
+ * Author URI: https://paypal.me/TheodoreSfakianakis
  * Text Domain: greek-vat-invoices-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 5.0

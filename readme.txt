@@ -59,7 +59,7 @@ Future versions will include:
 * 📊 **Invoice Numbering** - Automatic invoice numbering with annual counter
 * 📧 **Email Integration** - Custom email templates and automatic sending
 
-Support development to help prioritize these features! [Donate via PayPal](https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com)
+Support development to help prioritize these features! [Donate via PayPal](https://paypal.me/TheodoreSfakianakis)
 
 = Fully Translated =
 
@@ -150,7 +150,7 @@ Version 1.1.0 added WooCommerce Block Checkout support. Core functionality remai
 
 = How can I support development? =
 
-You can donate via PayPal to help fund future features: [https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com](https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com)
+You can donate via PayPal to help fund future features: [https://paypal.me/TheodoreSfakianakis](https://paypal.me/TheodoreSfakianakis)
 
 == Screenshots ==
 
@@ -208,7 +208,7 @@ Simplified version with improved validation and beautiful admin interface. Advan
 
 * GitHub: [https://github.com/TheoSfak](https://github.com/TheoSfak)
 * Email: theodore.sfakianakis@gmail.com
-* Donate: [https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com](https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com)
+* Donate: [https://paypal.me/TheodoreSfakianakis](https://paypal.me/TheodoreSfakianakis)
 
 == Support ==
 

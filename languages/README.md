@@ -64,4 +64,4 @@ If you need help with translations or want to contribute a translation, please:
 ---
 
 **Author:** Theodore Sfakianakis (irmaiden)  
-**Donate:** [PayPal](https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com)
+**Donate:** [PayPal](https://paypal.me/TheodoreSfakianakis)

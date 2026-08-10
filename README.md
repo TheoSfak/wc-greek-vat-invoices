@@ -241,7 +241,7 @@ Navigate to **WooCommerce → Settings → Ελληνικά Τιμολόγια**
 
 - 🌐 GitHub: [@TheoSfak](https://github.com/TheoSfak)
 - 📧 Email: theodore.sfakianakis@gmail.com
-- 💰 Support: [PayPal Donate](https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com)
+- 💰 Support: [PayPal Donate](https://paypal.me/TheodoreSfakianakis)
 
 ---
 
@@ -249,7 +249,7 @@ Navigate to **WooCommerce → Settings → Ελληνικά Τιμολόγια**
 
 If this plugin helped your Greek WooCommerce store, consider supporting its development:
 
-[![Donate with PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com)
+[![Donate with PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/TheodoreSfakianakis)
 
 **Why donate?**
 - ☕ Buy me a coffee
@@ -297,7 +297,7 @@ GNU General Public License for more details.
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/TheoSfak/greek-vat-invoices-for-woo/issues)
 - 💬 **Questions**: [GitHub Discussions](https://github.com/TheoSfak/greek-vat-invoices-for-woo/discussions)
 - 📧 **Email**: theodore.sfakianakis@gmail.com
-- 💰 **Donate**: [PayPal](https://www.paypal.com/donate?business=theodore.sfakianakis@gmail.com)
+- 💰 **Donate**: [PayPal](https://paypal.me/TheodoreSfakianakis)
 
 ---
 
