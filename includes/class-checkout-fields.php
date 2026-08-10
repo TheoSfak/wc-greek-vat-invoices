@@ -202,22 +202,22 @@ class GRVATIN_Checkout_Fields {
         $invoice_type = isset($_POST['billing_invoice_type']) ? sanitize_text_field(wp_unslash($_POST['billing_invoice_type'])) : 'receipt'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
         
         if ($invoice_type === 'invoice') {
-            // Validate required fields for invoice
-            if (empty($_POST['billing_company'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            // Validate required fields for invoice (each gated by its own setting)
+            if (get_option('GRVATIN_require_company', 'yes') === 'yes' && empty($_POST['billing_company'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_company', __('Η επωνυμία είναι υποχρεωτική για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'));
             }
-            
-            if (empty($_POST['billing_vat_number'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+            if (get_option('GRVATIN_require_vat', 'yes') === 'yes' && empty($_POST['billing_vat_number'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_vat_number', __('Το ΑΦΜ είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'));
-            } elseif (isset($_POST['billing_vat_number']) && !preg_match('/^[0-9]{9}$/', sanitize_text_field(wp_unslash($_POST['billing_vat_number'])))) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            } elseif (!empty($_POST['billing_vat_number']) && !preg_match('/^[0-9]{9}$/', sanitize_text_field(wp_unslash($_POST['billing_vat_number'])))) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_vat_number', __('Το ΑΦΜ πρέπει να είναι 9 ψηφία.', 'greek-vat-invoices-for-woocommerce'));
             }
-            
-            if (empty($_POST['billing_doy'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+            if (get_option('GRVATIN_require_doy', 'yes') === 'yes' && empty($_POST['billing_doy'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_doy', __('Η ΔΟΥ είναι υποχρεωτική για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'));
             }
-            
-            if (empty($_POST['billing_business_activity'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+            if (get_option('GRVATIN_require_activity', 'yes') === 'yes' && empty($_POST['billing_business_activity'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 $errors->add('billing_business_activity', __('Το επάγγελμα είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'));
             }
         }
@@ -396,15 +396,20 @@ class GRVATIN_Checkout_Fields {
      * Remove "(optional)" text from invoice fields
      */
     public function remove_optional_text($field, $key, $args, $value) {
-        // Only apply to our invoice fields
-        $invoice_fields = array('billing_company', 'billing_vat_number', 'billing_doy', 'billing_business_activity');
-        
-        if (in_array($key, $invoice_fields)) {
-            // Remove optional text
+        // Only strip the "(optional)" label from fields that are currently required —
+        // fields the admin has marked optional should keep showing it.
+        $required_option_map = array(
+            'billing_company' => 'GRVATIN_require_company',
+            'billing_vat_number' => 'GRVATIN_require_vat',
+            'billing_doy' => 'GRVATIN_require_doy',
+            'billing_business_activity' => 'GRVATIN_require_activity',
+        );
+
+        if (isset($required_option_map[$key]) && get_option($required_option_map[$key], 'yes') === 'yes') {
             $field = str_replace('<span class="optional">(προαιρετικό)</span>', '', $field);
             $field = str_replace('<span class="optional">(optional)</span>', '', $field);
         }
-        
+
         return $field;
     }
 }
