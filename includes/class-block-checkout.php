@@ -201,7 +201,7 @@ class GRVATIN_Block_Checkout {
     /**
      * Validate fields required only for invoice type
      */
-    public function validate_invoice_required_field($value, $field) {
+    public function validate_invoice_required_field($value, $field = array()) {
         $invoice_type = $this->get_submitted_invoice_type();
 
         if ($invoice_type !== 'invoice') {
