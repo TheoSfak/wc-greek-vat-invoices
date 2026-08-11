@@ -351,20 +351,29 @@ class GRVATIN_Checkout_Fields {
                 );
             }
             
-            $fields['billing_vat_number'] = array(
-                'label' => __('ΑΦΜ', 'greek-vat-invoices-for-woocommerce'),
-                'value' => $order->get_meta('_billing_vat_number')
-            );
-            
-            $fields['billing_doy'] = array(
-                'label' => __('ΔΟΥ', 'greek-vat-invoices-for-woocommerce'),
-                'value' => $order->get_meta('_billing_doy')
-            );
-            
-            $fields['billing_business_activity'] = array(
-                'label' => __('Επάγγελμα', 'greek-vat-invoices-for-woocommerce'),
-                'value' => $order->get_meta('_billing_business_activity')
-            );
+            $vat_number = $order->get_meta('_billing_vat_number');
+            if ($vat_number) {
+                $fields['billing_vat_number'] = array(
+                    'label' => __('ΑΦΜ', 'greek-vat-invoices-for-woocommerce'),
+                    'value' => $vat_number
+                );
+            }
+
+            $doy = $order->get_meta('_billing_doy');
+            if ($doy) {
+                $fields['billing_doy'] = array(
+                    'label' => __('ΔΟΥ', 'greek-vat-invoices-for-woocommerce'),
+                    'value' => $doy
+                );
+            }
+
+            $activity = $order->get_meta('_billing_business_activity');
+            if ($activity) {
+                $fields['billing_business_activity'] = array(
+                    'label' => __('Επάγγελμα', 'greek-vat-invoices-for-woocommerce'),
+                    'value' => $activity
+                );
+            }
         }
         
         return $fields;
