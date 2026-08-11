@@ -22,7 +22,7 @@ Singleton entry point: `GRVATIN_Greek_VAT_Invoices::get_instance()` in [greek-va
 - **Prefix**: `GRVATIN_` on all classes, hooks, option keys, and meta keys.
 - **Text domain**: `greek-vat-invoices-for-woocommerce` — every user-facing string must use `__('...', 'greek-vat-invoices-for-woocommerce')` or `_e(...)`.
 - **Security**: Always `wp_unslash()` + `sanitize_text_field()` on input; `esc_html()` / `wp_kses_post()` on output. WooCommerce handles checkout nonce verification — do not add redundant nonce checks inside `woocommerce_checkout_*` hooks (PHPCS `NonceVerification.Missing` suppressed intentionally).
-- **Option keys**: uppercase `GRVATIN_` prefix for plugin settings (e.g., `GRVATIN_uppercase`); lowercase `grvatin_` for user/order data (e.g., `grvatin_invoice_type_position`).
+- **Option keys**: uppercase `GRVATIN_` prefix for plugin settings (e.g., `GRVATIN_uppercase_fields`); lowercase `grvatin_` for user/order data (e.g., `grvatin_invoice_type_position`).
 - **HPOS**: Compatibility declared via `FeaturesUtil::declare_compatibility('custom_order_tables', ...)`.
 
 ## Build & Test
@@ -44,7 +44,7 @@ php -l includes/class-checkout-fields.php
 
 4. **Frontend visibility logic**: Field show/hide is driven by JS (`.grvatin-invoice-fields` class) and CSS with `!important` overrides in [assets/css/checkout.css](../assets/css/checkout.css). Keep this behavior intact when changing field structure.
 
-5. **VAT format**: Always 9-digit numeric string. Stored as uppercase if the `GRVATIN_uppercase` option is enabled — do not add leading-zero handling.
+5. **VAT format**: Always 9-digit numeric string. Stored as uppercase if the `GRVATIN_uppercase_fields` option is enabled — do not add leading-zero handling.
 
 6. **Email handler**: Uses inline CSS only — email clients don't support external stylesheets. Never move email styles to a file.
 
