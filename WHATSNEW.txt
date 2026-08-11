@@ -2,7 +2,7 @@
  Greek VAT & Invoices for WooCommerce - What's New
 ============================================================
 
-Version 1.2.0 (2026-08-10)
+Version 1.2.0 (2026-08-11)
 ------------------------------------------------------------
 
  ★ Per-Field Required/Optional Invoice Settings

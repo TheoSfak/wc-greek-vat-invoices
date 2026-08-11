@@ -162,7 +162,7 @@ You can donate via PayPal to help fund future features: [https://paypal.me/Theod
 
 == Changelog ==
 
-= 1.2.0 (2026-08-10) =
+= 1.2.0 (2026-08-11) =
 * Added per-field required/optional settings for invoice fields (Company Name, ΑΦΜ, ΔΟΥ, Business Activity) — all 4 required by default
 * Fixed Block Checkout showing Company Name, ΔΟΥ, and Business Activity as "(Optional)" while the server actually required them
 * Fixed the uppercase-conversion setting not being saved under the option it was read from
@@ -203,7 +203,7 @@ You can donate via PayPal to help fund future features: [https://paypal.me/Theod
 == Upgrade Notice ==
 
 = 1.2.0 =
-New: choose which invoice fields (Company, ΑΦΜ, ΔΟΥ, Business Activity) are required vs optional, per field. All 4 remain required by default, so behavior is unchanged unless you opt in. Also fixes the uppercase-conversion setting and updates the donate link.
+New: choose which invoice fields (Company, ΑΦΜ, ΔΟΥ, Business Activity) are required vs optional, per field. All 4 remain required by default, so behavior is unchanged unless you opt in. Also fixes the uppercase-conversion setting and updates the donate link. If you previously unchecked the uppercase-conversion setting, please re-check its state after updating — the fix for the setting id means it will show enabled again.
 
 = 1.1.0 =
 New: WooCommerce Block Checkout support! Choose between Classic and Block checkout in settings. VAT number is now mandatory for invoices.
