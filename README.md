@@ -1,6 +1,6 @@
 # Greek VAT & Invoices for WooCommerce
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-blue.svg)
 ![WooCommerce](https://img.shields.io/badge/woocommerce-3.0%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-green.svg)
@@ -36,6 +36,7 @@ Add essential Greek tax fields (ΑΦΜ, ΔΟΥ, Business Info) and Invoice/Recei
 - ✅ **Classic Field Position** - 10 position options for classic checkout
 - ✅ **Block Field Position** - Contact Information or Order section for block checkout
 - ✅ **Uppercase Conversion** - Auto-convert to CAPITAL LETTERS (AADE requirement)
+- ✅ **Per-Field Required/Optional** - Choose which invoice fields (Company Name, ΑΦΜ, ΔΟΥ, Business Activity) are required or optional
 - ✅ **Beautiful Settings Page** - Clean, modern admin interface
 
 ### 🎨 User Experience
@@ -106,6 +107,10 @@ Navigate to **WooCommerce → Settings → Ελληνικά Τιμολόγια**
 3. **Field Position**
    - Choose where "Invoice Type" field appears
    - Options: After email (recommended), after phone, before name, etc.
+
+4. **Required Fields**
+   - Choose which invoice fields (Company Name, ΑΦΜ, ΔΟΥ, Business Activity) are required or optional
+   - Default: All required
 
 ---
 
@@ -202,6 +207,12 @@ Navigate to **WooCommerce → Settings → Ελληνικά Τιμολόγια**
 ---
 
 ## 📝 Changelog
+
+### Version 1.2.0 (2026-08-11)
+- ✅ Added per-field required/optional settings for invoice fields (Company Name, ΑΦΜ, ΔΟΥ, Business Activity) — all 4 required by default
+- ✅ Fixed Block Checkout showing Company Name, ΔΟΥ, and Business Activity as "(Optional)" while the server actually required them
+- ✅ Fixed the uppercase-conversion setting not being saved under the option it was read from
+- ✅ Updated donate link
 
 ### Version 1.1.0 (2026-03-13)
 - ✅ Added WooCommerce Block Checkout support (Additional Checkout Fields API)
