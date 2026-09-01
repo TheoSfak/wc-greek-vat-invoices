@@ -71,11 +71,12 @@
 
         var value = inputEl.value.trim();
         var isRequired = params[field.requiredKey] === 'yes';
+        var requiredText = params.required_text || 'This field is required.';
 
         if (isRequired && !value) {
             var errors = {};
             errors[key] = {
-                message: params.required_text || 'This field is required.',
+                message: requiredText,
                 hidden: false
             };
             api.dispatch.setValidationErrors(errors);
@@ -84,7 +85,7 @@
             // never stomp a WooCommerce-native error (e.g. an invalid ΑΦΜ
             // format) that happens to share this field's key.
             var existing = api.select.getValidationError(key);
-            if (existing && existing.message === params.required_text) {
+            if (existing && existing.message === requiredText) {
                 api.dispatch.clearValidationError(key);
             }
         }
