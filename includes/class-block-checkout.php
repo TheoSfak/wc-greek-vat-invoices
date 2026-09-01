@@ -68,6 +68,35 @@ class GRVATIN_Block_Checkout {
     }
 
     /**
+     * Build a conditional-required rule (WooCommerce Blocks JSON Schema format)
+     * that only evaluates true when the sibling invoice-type field, registered
+     * at the same location, is set to 'invoice'. Used so a field marked required
+     * by the admin is only enforced client-side while "Τιμολόγιο" is selected —
+     * otherwise WooCommerce Blocks' own validation store treats the field as
+     * required regardless of the (CSS-only) hidden state applied by
+     * assets/js/block-checkout.js, blocking checkout on a field the customer
+     * cannot see or fill in.
+     */
+    private function get_invoice_type_required_rule() {
+        $location_key = $this->get_block_location() === 'contact' ? 'customer' : 'checkout';
+
+        return array(
+            $location_key => array(
+                'properties' => array(
+                    'additional_fields' => array(
+                        'properties' => array(
+                            'grvatin/invoice-type' => array(
+                                'const' => 'invoice',
+                            ),
+                        ),
+                        'required' => array('grvatin/invoice-type'),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    /**
      * Register additional checkout fields for block checkout
      */
     public function register_fields() {
@@ -105,7 +134,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 1,
-            'required'         => get_option('GRVATIN_require_company', 'yes') === 'yes',
+            'required'         => get_option('GRVATIN_require_company', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -116,7 +145,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 2,
-            'required'         => get_option('GRVATIN_require_vat', 'yes') === 'yes',
+            'required'         => get_option('GRVATIN_require_vat', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
             'attributes'       => array(
                 'maxLength'    => 9,
                 'pattern'      => '[0-9]{9}',
@@ -132,7 +161,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 3,
-            'required'         => get_option('GRVATIN_require_doy', 'yes') === 'yes',
+            'required'         => get_option('GRVATIN_require_doy', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -143,7 +172,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 4,
-            'required'         => get_option('GRVATIN_require_activity', 'yes') === 'yes',
+            'required'         => get_option('GRVATIN_require_activity', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -271,9 +300,17 @@ class GRVATIN_Block_Checkout {
         wp_enqueue_script(
             'grvatin-block-checkout',
             GRVATIN_PLUGIN_URL . 'assets/js/block-checkout.js',
-            array(),
+            array('wp-data'),
             GRVATIN_VERSION,
             true
         );
+
+        wp_localize_script('grvatin-block-checkout', 'grvatin_block_params', array(
+            'require_company'  => get_option('GRVATIN_require_company', 'yes'),
+            'require_vat'      => get_option('GRVATIN_require_vat', 'yes'),
+            'require_doy'      => get_option('GRVATIN_require_doy', 'yes'),
+            'require_activity' => get_option('GRVATIN_require_activity', 'yes'),
+            'required_text'    => __('Αυτό το πεδίο είναι υποχρεωτικό για την έκδοση τιμολογίου.', 'greek-vat-invoices-for-woocommerce'),
+        ));
     }
 }
