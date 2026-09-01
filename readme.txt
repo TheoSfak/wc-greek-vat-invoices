@@ -4,7 +4,7 @@ Tags: woocommerce, timologia, timologio, greek, checkout
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,10 @@ You can donate via PayPal to help fund future features: [https://paypal.me/Theod
 
 == Changelog ==
 
+= 1.2.1 (2026-09-01) =
+* Fixed Block Checkout: selecting "Απόδειξη" (Receipt) still required Company Name, ΑΦΜ, ΔΟΥ, and Business Activity even though those fields are correctly hidden — the customer could not complete the order
+* Hardened the required-fields feature to only apply on WooCommerce 9.9.0+ (needed for per-field conditional requirements); older WooCommerce versions fall back to server-side-only enforcement instead of the client incorrectly treating fields as always required
+
 = 1.2.0 (2026-08-11) =
 * Added per-field required/optional settings for invoice fields (Company Name, ΑΦΜ, ΔΟΥ, Business Activity) — all 4 required by default
 * Fixed Block Checkout showing Company Name, ΔΟΥ, and Business Activity as "(Optional)" while the server actually required them
@@ -201,6 +205,9 @@ You can donate via PayPal to help fund future features: [https://paypal.me/Theod
 * Company information fields
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+Fixes a bug where Block Checkout customers selecting "Απόδειξη" (Receipt) could not complete their order — the hidden invoice fields were still being treated as required. Update recommended if you use Block Checkout.
 
 = 1.2.0 =
 New: choose which invoice fields (Company, ΑΦΜ, ΔΟΥ, Business Activity) are required vs optional, per field. All 4 remain required by default, so behavior is unchanged unless you opt in. Also fixes the uppercase-conversion setting and updates the donate link. If you previously unchecked the uppercase-conversion setting, please re-check its state after updating — the fix for the setting id means it will show enabled again.

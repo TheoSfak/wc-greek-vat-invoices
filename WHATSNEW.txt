@@ -2,6 +2,37 @@
  Greek VAT & Invoices for WooCommerce - What's New
 ============================================================
 
+Version 1.2.1 (2026-09-01)
+------------------------------------------------------------
+
+ ★ Bug Fix: Block Checkout Blocked Orders on "Απόδειξη" (Receipt)
+
+   Selecting "Απόδειξη" correctly hid the Company Name, ΑΦΜ, ΔΟΥ,
+   and Business Activity fields, but WooCommerce Blocks' own
+   client-side validation still treated them as required, so the
+   customer could not place the order. The required state is now
+   evaluated against which invoice type is actually selected, both
+   server-side and client-side, so Receipt orders are no longer
+   blocked by fields the customer cannot see or fill in.
+
+   Requires WooCommerce 9.9.0 or later for this per-field
+   conditional behavior (needed for WooCommerce's own conditional
+   required-field support). On older WooCommerce versions, the
+   plugin falls back to enforcing required invoice fields on the
+   server only, the same as before the required/optional fields
+   feature existed, rather than incorrectly treating fields as
+   always required client-side.
+
+   Modified files:
+   • includes/class-block-checkout.php — required flag is now a
+     WooCommerce Blocks conditional rule tied to the invoice-type
+     field, gated on WooCommerce 9.9.0+
+   • assets/js/block-checkout.js — explicitly synchronizes each
+     field's validation-store error with live visibility, the
+     admin's required setting, and its current value
+
+------------------------------------------------------------
+
 Version 1.2.0 (2026-08-11)
 ------------------------------------------------------------
 

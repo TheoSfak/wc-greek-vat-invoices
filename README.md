@@ -1,6 +1,6 @@
 # Greek VAT & Invoices for WooCommerce
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.2.1-blue.svg)
 ![WordPress](https://img.shields.io/badge/wordpress-5.0%2B-blue.svg)
 ![WooCommerce](https://img.shields.io/badge/woocommerce-3.0%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-green.svg)
@@ -207,6 +207,10 @@ Navigate to **WooCommerce → Settings → Ελληνικά Τιμολόγια**
 ---
 
 ## 📝 Changelog
+
+### Version 1.2.1 (2026-09-01)
+- ✅ Fixed Block Checkout: selecting "Απόδειξη" (Receipt) still required the hidden Company Name, ΑΦΜ, ΔΟΥ, and Business Activity fields, blocking the order
+- ✅ Required-fields feature now requires WooCommerce 9.9.0+ and falls back to server-side-only enforcement on older versions
 
 ### Version 1.2.0 (2026-08-11)
 - ✅ Added per-field required/optional settings for invoice fields (Company Name, ΑΦΜ, ΔΟΥ, Business Activity) — all 4 required by default

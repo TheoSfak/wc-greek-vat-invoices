@@ -8,12 +8,18 @@
  *   Text wrappers:  .wc-block-components-address-form__grvatin-vat-number etc.
  *
  * Also mirrors the visibility toggle into WooCommerce Blocks' own client-side
- * validation store: hiding a field via CSS does not, by itself, tell the
- * checkout block that the field is no longer required, so leaving that field
- * empty otherwise blocks "Place Order" even though the customer cannot see
- * or fill it in. This explicitly clears each dependent field's validation
- * error whenever it is hidden, and (re)applies it when the field is visible,
- * required by the admin setting, and currently empty.
+ * validation store (wc/store/validation). Hiding a field via CSS does not,
+ * by itself, tell the checkout block the field is no longer required: the
+ * PHP side (class-block-checkout.php) registers each field's 'required' as
+ * a rule conditional on the sibling invoice-type field, but WooCommerce
+ * Blocks' input validator only re-runs on its own value changing, not on a
+ * 'required' prop flip alone — so switching invoice type without also
+ * touching one of these four fields leaves a stale validation state.
+ *
+ * WooCommerce Blocks keys validation-store entries as `${location}_${id}`
+ * (e.g. "contact_grvatin/vat-number", "order_grvatin/doy" — see
+ * CheckoutFieldsSchema and wc-blocks-data's own field-key mapper), not the
+ * bare field id, so every dispatch below is built through errorKey().
  */
 (function () {
     'use strict';
@@ -27,39 +33,67 @@
     ];
 
     function getParams() {
-        return window.grvatin_block_params || {};
+        return window.grvatin_block_params || null;
     }
 
-    function getValidationDispatch() {
-        if (!window.wp || !window.wp.data || typeof window.wp.data.dispatch !== 'function') {
+    function errorKey(field, params) {
+        return (params.location || 'contact') + '_' + field.id;
+    }
+
+    function getValidationApi() {
+        if (!window.wp || !window.wp.data || typeof window.wp.data.dispatch !== 'function' || typeof window.wp.data.select !== 'function') {
             return null;
         }
-        return window.wp.data.dispatch('wc/store/validation');
+        return {
+            dispatch: window.wp.data.dispatch('wc/store/validation'),
+            select: window.wp.data.select('wc/store/validation')
+        };
     }
 
-    function updateFieldValidation(field, isInvoice) {
-        var validation = getValidationDispatch();
-        if (!validation) return;
+    function updateFieldValidation(field, isInvoice, params) {
+        var api = getValidationApi();
+        if (!api || !api.dispatch || !api.select) return;
+
+        var key = errorKey(field, params);
+
+        if (!isInvoice) {
+            // Receipt selected: this field cannot be relevant, regardless of
+            // what set the error (our own required check, or WooCommerce's
+            // own native validator e.g. a malformed ΑΦΜ typed earlier while
+            // Τιμολόγιο was selected) — always safe to clear.
+            api.dispatch.clearValidationError(key);
+            return;
+        }
 
         var wrapperEl = document.querySelector('.' + field.wrapper);
         var inputEl = wrapperEl ? wrapperEl.querySelector('input') : null;
-        var value = inputEl ? inputEl.value.trim() : '';
-        var params = getParams();
+        if (!inputEl) return;
+
+        var value = inputEl.value.trim();
         var isRequired = params[field.requiredKey] === 'yes';
 
-        if (isInvoice && isRequired && !value) {
+        if (isRequired && !value) {
             var errors = {};
-            errors[field.id] = {
+            errors[key] = {
                 message: params.required_text || 'This field is required.',
                 hidden: false
             };
-            validation.setValidationErrors(errors);
+            api.dispatch.setValidationErrors(errors);
         } else {
-            validation.clearValidationError(field.id);
+            // Only clear an error this script could plausibly have set —
+            // never stomp a WooCommerce-native error (e.g. an invalid ΑΦΜ
+            // format) that happens to share this field's key.
+            var existing = api.select.getValidationError(key);
+            if (existing && existing.message === params.required_text) {
+                api.dispatch.clearValidationError(key);
+            }
         }
     }
 
     function toggleFields() {
+        var params = getParams();
+        if (!params) return;
+
         var selectWrapper = document.querySelector('.' + SELECT_WRAPPER);
         if (!selectWrapper) return;
 
@@ -74,7 +108,7 @@
             if (el) {
                 el.style.display = isInvoice ? '' : 'none';
             }
-            updateFieldValidation(field, isInvoice);
+            updateFieldValidation(field, isInvoice, params);
         }
     }
 
@@ -112,7 +146,10 @@
             if (!e.target || e.target.tagName !== 'INPUT') return;
             var field = fieldForInput(e.target);
             if (field) {
-                updateFieldValidation(field, isInvoiceTypeSelected());
+                var params = getParams();
+                if (params) {
+                    updateFieldValidation(field, isInvoiceTypeSelected(), params);
+                }
             }
         });
 

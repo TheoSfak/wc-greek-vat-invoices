@@ -68,30 +68,49 @@ class GRVATIN_Block_Checkout {
     }
 
     /**
+     * WooCommerce Blocks' rule-based (conditionally evaluated) 'required'/'hidden'
+     * field properties require WooCommerce 9.9.0 — see
+     * https://developer.woocommerce.com/docs/block-development/tutorials/how-to-conditional-additional-fields/
+     * On older versions a rules array is not recognized: it is truthy, so the
+     * client renders the field as always-required regardless of invoice type,
+     * which is the bug this class works around. Gate on the floor so older
+     * installs instead get a plain `false` (server-side-only enforcement via
+     * validate_invoice_required_field()/validate_vat_number(), same as how
+     * three of these four fields already behaved before 1.2.0) rather than
+     * silently-wrong client behaviour.
+     */
+    private function supports_conditional_rules() {
+        return defined('WC_VERSION') && version_compare(WC_VERSION, '9.9.0', '>=');
+    }
+
+    /**
      * Build a conditional-required rule (WooCommerce Blocks JSON Schema format)
      * that only evaluates true when the sibling invoice-type field, registered
      * at the same location, is set to 'invoice'. Used so a field marked required
-     * by the admin is only enforced client-side while "Τιμολόγιο" is selected —
-     * otherwise WooCommerce Blocks' own validation store treats the field as
-     * required regardless of the (CSS-only) hidden state applied by
-     * assets/js/block-checkout.js, blocking checkout on a field the customer
-     * cannot see or fill in.
+     * by the admin only registers as required, server-side and client-side,
+     * while "Τιμολόγιο" is selected — otherwise WooCommerce Blocks' own
+     * validation would treat the field as required regardless of the
+     * (CSS-only) hidden state applied by assets/js/block-checkout.js, blocking
+     * checkout on a field the customer cannot see or fill in.
      */
     private function get_invoice_type_required_rule() {
         $location_key = $this->get_block_location() === 'contact' ? 'customer' : 'checkout';
 
         return array(
             $location_key => array(
+                'type'       => 'object',
                 'properties' => array(
                     'additional_fields' => array(
+                        'type'       => 'object',
                         'properties' => array(
                             'grvatin/invoice-type' => array(
                                 'const' => 'invoice',
                             ),
                         ),
-                        'required' => array('grvatin/invoice-type'),
+                        'required'   => array('grvatin/invoice-type'),
                     ),
                 ),
+                'required'   => array('additional_fields'),
             ),
         );
     }
@@ -106,6 +125,11 @@ class GRVATIN_Block_Checkout {
 
         $base_index = $this->get_field_index();
         $location   = $this->get_block_location();
+
+        // Computed once and reused across all 4 dependent fields below — same
+        // rule content for all of them, only whether each field applies it
+        // (based on its own admin required/optional setting) differs.
+        $conditional_required_rule = $this->supports_conditional_rules() ? $this->get_invoice_type_required_rule() : false;
 
         woocommerce_register_additional_checkout_field(array(
             'id'               => 'grvatin/invoice-type',
@@ -134,7 +158,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 1,
-            'required'         => get_option('GRVATIN_require_company', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
+            'required'         => get_option('GRVATIN_require_company', 'yes') === 'yes' ? $conditional_required_rule : false,
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -145,7 +169,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 2,
-            'required'         => get_option('GRVATIN_require_vat', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
+            'required'         => get_option('GRVATIN_require_vat', 'yes') === 'yes' ? $conditional_required_rule : false,
             'attributes'       => array(
                 'maxLength'    => 9,
                 'pattern'      => '[0-9]{9}',
@@ -161,7 +185,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 3,
-            'required'         => get_option('GRVATIN_require_doy', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
+            'required'         => get_option('GRVATIN_require_doy', 'yes') === 'yes' ? $conditional_required_rule : false,
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -172,7 +196,7 @@ class GRVATIN_Block_Checkout {
             'location'         => $location,
             'type'             => 'text',
             'index'            => $base_index + 4,
-            'required'         => get_option('GRVATIN_require_activity', 'yes') === 'yes' ? $this->get_invoice_type_required_rule() : false,
+            'required'         => get_option('GRVATIN_require_activity', 'yes') === 'yes' ? $conditional_required_rule : false,
             'sanitize_callback' => array($this, 'sanitize_text_upper'),
             'validate_callback' => array($this, 'validate_invoice_required_field'),
         ));
@@ -306,6 +330,7 @@ class GRVATIN_Block_Checkout {
         );
 
         wp_localize_script('grvatin-block-checkout', 'grvatin_block_params', array(
+            'location'         => $this->get_block_location(),
             'require_company'  => get_option('GRVATIN_require_company', 'yes'),
             'require_vat'      => get_option('GRVATIN_require_vat', 'yes'),
             'require_doy'      => get_option('GRVATIN_require_doy', 'yes'),
